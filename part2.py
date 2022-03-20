@@ -27,26 +27,28 @@ TRANSFORMATIONS = [
 def Apply_Transformation(img, transform_idx):
 
     # Get transformation to apply
-    transform_array = TRANSFORMATIONS[transform_idx]
+    # Take the inverse to perform inverse warping
+    transform_array = np.linalg.inv(TRANSFORMATIONS[transform_idx])
 
     # Initialize new image
     new_img = np.zeros(shape=img.shape)
 
-    # Loop through coordinates and apply transformation
-    for r in range(img.shape[0]):
-        for c in range(img.shape[1]):
+    # Loop through coordinates and
+    # apply inverse transformation
+    for r in range(new_img.shape[0]):
+        for c in range(new_img.shape[1]):
             current_coor = np.array([c, r, 1])
-            new_coor = np.matmul(transform_array, current_coor)
-            new_x = int(new_coor[0] / new_coor[2])
-            new_y = int(new_coor[1] / new_coor[2])
-            # Update new image if new coordinate
+            old_coor = np.matmul(transform_array, current_coor)
+            old_x = int(old_coor[0] / old_coor[2])
+            old_y = int(old_coor[1] / old_coor[2])
+            # Update new image if old coordinate
             # is within the image coordinate bounds
-            if new_y < img.shape[0] and \
-                new_x < img.shape[1] and \
-                new_y > 0 and \
-                new_x > 0:
+            if old_y < img.shape[0] and \
+                old_x < img.shape[1] and \
+                old_y > 0 and \
+                old_x > 0:
 
-                    new_img[new_y, new_x] = img[r, c]
+                    new_img[r, c] = img[old_y, old_x]
 
     return new_img
 
