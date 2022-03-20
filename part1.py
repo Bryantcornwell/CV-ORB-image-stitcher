@@ -1,16 +1,16 @@
-
-
-
-
+from sklearn.metrics import euclidean_distances
 import cv2
 import numpy as np
 import sys
 
-
-def eu_dist(point1, point2):
+def eculidean_distance(point1, point2):
     dist = np.sqrt(np.sum(np.power(point1 - point2, 2)))
     return dist
 
+
+def distance(point1, point2, kind='euclidean'):
+    if kind == 'euclidean':
+        return euclidean_distance(point1, point2)
 
 # Step 1 Determine ORB Matching
 k = sys.argv[1]
@@ -37,9 +37,9 @@ for p1 in keypoints1:
     second_match = 0
     for p2 in keypoints2:
         point_list.append(p2)
-        point_dist = eu_dist(p1, p2)
+        point_dist = distance(p1, p2)
         dist_list.append(point_dist)
-        if prev_dist < point_dist:
+        if point_dist < prev_dist:
             second_match = nearest_match
             nearest_match = p2
         prev_dist = point_dist
