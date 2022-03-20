@@ -3,8 +3,8 @@ import numpy as np
 import sys
 
 def euclidean_distance(point1, point2):
-    dist = np.sqrt(np.sum(np.power(point1 - point2, 2)))
-    return dist
+    distance= np.sqrt(np.sum(np.power(point1 - point2, 2)))
+    return distance
 
 
 def distance(point1, point2, kind='euclidean'):
@@ -29,25 +29,25 @@ orb = cv2.ORB_create(nfeatures=1000)
 # Two for loops to iterate through each feature point and calculate the Euclidean Distance
 
 for p1 in keypoints1:
-    prev_dist = 10000
+    previous_distance= 10000
     point_list = []
-    dist_list = []
+    distance_list = []
     nearest_match = 0
     second_match = 0
     for p2 in keypoints2:
         point_list.append(p2)
-        point_dist = distance(p1, p2)
-        dist_list.append(point_dist)
-        if point_dist < prev_dist:
+        point_distance= distance(p1, p2)
+        distance_list.append(point_distance)
+        if point_distance< previous_distance:
             second_match = nearest_match
             nearest_match = p2
-        prev_dist = point_dist
+        previous_distance= point_distance
         # Need to determine if we want a quicker computational approach
 
     # feature match
-    dist_closest = p1 - nearest_match
-    dist_2ndclosest = p1 - second_match
-    match = dist_closest / dist_2ndclosest
+    distance_closest = p1 - nearest_match
+    distance_2ndclosest = p1 - second_match
+    match = distance_closest / distance_2ndclosest
     # if match < threshold then it is a match
     #   Create a visual indication between the matched points for both images
     # else:pass
