@@ -1,9 +1,8 @@
-from sklearn.metrics import euclidean_distances
 import cv2
 import numpy as np
 import sys
 
-def eculidean_distance(point1, point2):
+def euclidean_distance(point1, point2):
     dist = np.sqrt(np.sum(np.power(point1 - point2, 2)))
     return dist
 
