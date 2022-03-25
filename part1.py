@@ -1,3 +1,5 @@
+#!/usr/local/bin/python3
+
 import cv2
 import numpy as np
 import sys
@@ -66,14 +68,9 @@ if __name__ == '__main__':
     # Step 1 Determine ORB Matching
     try:
         k = sys.argv[1]
-<<<<<<< HEAD
         images = sys.argv[2:-1]
         output = sys.argv[-1]
     except:
         raise Exception(f'Usage: python3 part1.py <k>')
 
-=======
-    except:
-        raise Exception("Usage: ./a2 part1 k img_1.png img_2.png ... img_n.png output_file.txt")
->>>>>>> df559b2ea934d66b2ba643116a5bd3f8d4781005
     main(k)
