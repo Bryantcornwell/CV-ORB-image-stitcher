@@ -27,8 +27,8 @@ def main(k=2):
 
     # Test image
     test_img = cv2.hconcat([img1, img2])
-    cv2.imshow('Horizontal', test_img)
-    cv2.waitKey(0)
+    #cv2.imshow('Horizontal', test_img)
+    #cv2.waitKey(0)
 
     # Threshold
 
@@ -64,5 +64,8 @@ def main(k=2):
 
 if __name__ == '__main__':
     # Step 1 Determine ORB Matching
-    k = sys.argv[1]
+    try:
+        k = sys.argv[1]
+    except:
+        raise Exception("Usage: ./a2 part1 k img_1.png img_2.png ... img_n.png output_file.txt")
     main(k)

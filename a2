@@ -1,0 +1,12 @@
+#!/bin/bash
+
+file="${1}.py"
+
+args=("$@")
+
+command="python3 ${file} "
+
+for (( i=1;i<${#args[@]};i++)); do   
+  command+="${args[${i}]} "
+done
+eval $command
