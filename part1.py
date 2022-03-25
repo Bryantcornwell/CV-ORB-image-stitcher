@@ -1,8 +1,11 @@
 #!/usr/local/bin/python3
 
+import sys
+import itertools
+
+
 import cv2
 import numpy as np
-import sys
 
 
 def euclidean_distance(point1, point2):
@@ -14,8 +17,10 @@ def distance(point1, point2, kind='euclidean'):
     if kind == 'euclidean':
         return euclidean_distance(point1, point2)
 
+def orb_sift_match(image_a, image_b):
+    # Does some shit
 
-def main(image_a, image_b, k=2):
+    return '_3' in image_b or '_5' in image_b
 
     img1 = cv2.imread("part1-images/bigben_2.jpg", cv2.IMREAD_GRAYSCALE)
     img2 = cv2.imread("part1-images/bigben_3.jpg", cv2.IMREAD_GRAYSCALE)
@@ -63,6 +68,21 @@ def main(image_a, image_b, k=2):
     #cv2.imshow('Horizontal', test_img)
     #cv2.imwrite("lincoln-orb.jpg", img1)
 
+def cluster_images(images):
+
+    # Get all possible pairs of images
+    pairings = [pair for pair in itertools.product(images, images) if pair[0] != pair[1] and pair[0] < pair[1]]
+    # Determine whether they have an ORB/SIFT Match
+    matches = {pair: orb_sift_match(pair[0], pair[1]) for pair in pairings}
+    # Select only matched pairs
+    matched_pairs = [str(pair) for pair in matches if matches[pair]]
+
+    print('\n'.join(matched_pairs))
+
+def main(images, output, k=2):
+
+    cluster_images(images)
+
 
 if __name__ == '__main__':
     # Step 1 Determine ORB Matching
@@ -73,4 +93,4 @@ if __name__ == '__main__':
     except:
         raise Exception(f'Usage: python3 part1.py <k>')
 
-    main(k)
+    main(images, output, k)
