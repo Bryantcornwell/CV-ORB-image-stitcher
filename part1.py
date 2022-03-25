@@ -13,7 +13,7 @@ def distance(point1, point2, kind='euclidean'):
         return euclidean_distance(point1, point2)
 
 
-def main(k=2):
+def main(image_a, image_b, k=2):
 
     img1 = cv2.imread("part1-images/bigben_2.jpg", cv2.IMREAD_GRAYSCALE)
     img2 = cv2.imread("part1-images/bigben_3.jpg", cv2.IMREAD_GRAYSCALE)
@@ -64,5 +64,11 @@ def main(k=2):
 
 if __name__ == '__main__':
     # Step 1 Determine ORB Matching
-    k = sys.argv[1]
+    try:
+        k = sys.argv[1]
+        images = sys.argv[2:-1]
+        output = sys.argv[-1]
+    except:
+        raise Exception(f'Usage: python3 part1.py <k>')
+
     main(k)
