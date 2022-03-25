@@ -19,6 +19,10 @@ def distance(point1, point2, kind='euclidean'):
 
 def orb_sift_match(image_a, image_b):
     # Does some shit
+    # Returns Boolean (True or False)
+    # Possibly return distance to closest and second closest match too
+    # E.g True/False
+    # (True/False, distance, another_distance)
 
     return '_3' in image_b or '_5' in image_b
 
