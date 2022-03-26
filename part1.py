@@ -3,11 +3,17 @@
 import sys
 import itertools
 from datetime import datetime
+from pathlib import Path
+from multiprocessing import Pool, freeze_support
+from functools import partial
 
-from PIL import ImageDraw
+from PIL import ImageDraw, Image, ImageOps
 import cv2
 import numpy as np
+from tqdm import tqdm, trange
 
+
+runtime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
 def euclidean_distance(point1, point2):
     #print(type(cv2.KeyPoint_convert(keypoints=point1), type(point2)))
@@ -19,7 +25,10 @@ def distance(point1, point2, kind='euclidean'):
     if kind == 'euclidean':
         return euclidean_distance(point1, point2)
 
+
 def orb_sift_match(image_a, image_b, threshold=1):
+
+    image_a, image_b = map(Path, [image_a, image_b])
     # Does some shit
     # Returns Boolean (True or False)
     # Possibly return distance to closest and second closest match too
@@ -29,13 +38,28 @@ def orb_sift_match(image_a, image_b, threshold=1):
     #return '_3' in image_b or '_5' in image_b
 
     # img1 = cv2.imread(image_a, cv2.IMREAD_GRAYSCALE)
-    img1 = cv2.imread(image_a)
-    img2 = cv2.imread(image_b)
+    img1 = cv2.imread(str(image_a))
+    #print(img1.shape)
+    img2 = cv2.imread(str(image_b))
+    #print(img2.shape)
+    img2 = cv2.resize(img2, (img1.shape[1], img1.shape[0]))
 
     # you can increase nfeatures to adjust how many features to detect
-    orb = cv2.ORB_create(nfeatures=200)
+    orb = cv2.ORB_create(nfeatures=500)
 
     # detect features
+    """    if image_a.name in descriptors and image_a.name in keypoints:
+        (keypoints1, descriptors1) = keypoints[image_a.name], descriptors[image_a.name]
+    else:
+        (keypoints1, descriptors1) = orb.detectAndCompute(img1, None)
+        keypoints[image_a.name] = keypoints1
+        descriptors[image_a.name] = descriptors1
+    if image_b.name in descriptors and image_b.name in keypoints:
+        (keypoints2, descriptors2) = keypoints[image_b.name], descriptors[image_b.name]
+    else:
+        (keypoints2, descriptors2) = orb.detectAndCompute(img2, None)
+        keypoints[image_b.name] = keypoints2
+        descriptors[image_b.name] = descriptors2"""
     (keypoints1, descriptors1) = orb.detectAndCompute(img1, None)
     (keypoints2, descriptors2) = orb.detectAndCompute(img2, None)
     keypoints1 = np.array([key_point.pt for key_point in keypoints1]).reshape(-1, 1, 2)
@@ -48,56 +72,90 @@ def orb_sift_match(image_a, image_b, threshold=1):
     #cv2.waitKey(0)
 
     # Two for loops to iterate through each feature point and calculate the Euclidean Distance
-    for p1 in keypoints1:
-        previous_distance = 10000
-        point_list = []
-        distance_list = []
-        nearest_match = 0
-        second_match = 0
-        for p2 in keypoints2:
+    point_list = []
+    #for p1, desc1 in tqdm(zip(keypoints1, descriptors1), desc='p1', position=2, leave=False, total=len(keypoints1), unit='points'):
+    for p1, desc1 in zip(keypoints1, descriptors1):
+        nearest_distance = np.inf
+        second_distance = np.inf
+        nearest_match_point = 0
+        nearest_match_desc = 0
+        second_match_point = 0
+        second_match_desc = 0
+        #for p2, desc2 in tqdm(zip(keypoints2, descriptors2), desc='p2', position=3, leave=False, total=len(keypoints2), unit='points'):
+        for p2, desc2 in zip(keypoints2, descriptors2):
             #point_list.append(p2)
-            point_distance = distance(p1, p2)
-            distance_list.append(point_distance)
-            if point_distance < previous_distance:
-                second_match = nearest_match
-                nearest_match = p2
-            previous_distance = point_distance
+            point_distance = distance(desc1, desc2)
+            if point_distance < nearest_distance:
+                second_distance = nearest_distance
+                second_match_point = nearest_match_point
+                second_match_desc = nearest_match_desc
+                nearest_distance = point_distance
+                nearest_match_point = p2
+                nearest_match_desc = desc2
+            elif point_distance < second_distance:
+                second_match_point = p2
+                second_match_desc = desc2
             # Need to determine if we want a quicker computational approach
 
         # feature match
-        distance_closest = distance(p1, nearest_match)
-        distance_2ndclosest = distance(p1, second_match)
+        distance_closest = distance(desc1, nearest_match_desc)
+        distance_2ndclosest = distance(desc1, second_match_desc)
         match = distance_closest / distance_2ndclosest
         # if match < threshold then it is a match
         if match < threshold:
-            point_list.append([p1, nearest_match])
-            cv2.line(test_img, p1[0].astype(int), ((nearest_match[0][0]+img1.shape[0]).astype(int),
-                                                   nearest_match[0][1].astype(int)), (255, 0, 0))
+            point_list.append([p1, nearest_match_point, distance_closest, distance_2ndclosest])
+            cv2.line(test_img, p1[0].astype(int), ((nearest_match_point[0][0]+img1.shape[1]).astype(int),
+                                                   nearest_match_point[0][1].astype(int)), (255, 0, 0))
             #draw.line((p1, (nearest_match[0]+img1.width, nearest_match[1])), fill=(255, 0, 0), width=7)
         #   Create a visual indication between the matched points for both images
-        else:
-            pass
 
-    if not cv2.imwrite(f'outputs/example_match_{threshold}_{datetime.now().strftime("%Y%m%d%H%M%S")}.png', test_img):
-        raise Exception("Image not saved.")
+    if len(point_list) > 0:
+        output_path = Path(f'outputs/{runtime}/{int(threshold*100)}')
+        if not output_path.exists():
+            output_path.mkdir(parents=True, exist_ok=True)
+
+        if not cv2.imwrite(f'{output_path}/{image_a.name}_{image_b.name}.png', test_img):
+            raise Exception("Image not saved.")
+
+    return point_list
     #cv2.imwrite("lincoln-orb.jpg", img1)
+
+def generate_matched_pairs(case):
+
+    pair = case[1]
+    threshold = case[0]
+    """
+    pairings = case[1]
+    threshold = case[0]
+    matches = {pair: orb_sift_match(pair[0], pair[1], threshold=threshold) for pair in pairings}
+    # Select only matched pairs
+    #matched_pairs = [str(pair) for pair in matches if matches[pair]]
+    matched_pairs = [f'{pair} | {len(matches[pair])}' for pair in matches]
+    with open(f'{runtime}/matched_pairs_{threshold}.txt.', 'w+') as file:
+        file.write('\n'.join(matched_pairs))
+    """
+
+    return orb_sift_match(pair[0], pair[1], threshold=threshold)
 
 def cluster_images(images):
 
     # Get all possible pairs of images
-    pairings = [pair for pair in itertools.product(images, images) if pair[0] != pair[1] and pair[0] < pair[1]]
+    pairings = tuple([pair for pair in itertools.product(images, images) if pair[0] != pair[1] and pair[0] < pair[1]])
     # Determine whether they have an ORB/SIFT Match
-    matches = {pair: orb_sift_match(pair[0], pair[1]) for pair in pairings}
-    # Select only matched pairs
-    matched_pairs = [str(pair) for pair in matches if matches[pair]]
-
-    print('\n'.join(matched_pairs))
+    thresholds = [i / 100 for i in range(10,101,10)]
+    cases = [(threshold, pair) for threshold in thresholds for pair in pairings]
+    #print(len(pairings), len(thresholds))
+    matched_pairs = []
+    with Pool(8) as p:
+        #matched_pairs = tqdm(p.imap(generate_matched_pairs, cases), total=len(cases))
+        for result in tqdm(p.imap_unordered(generate_matched_pairs, cases), total=len(cases)):
+            matched_pairs.append(result)
 
 def main(images, output, k=2):
 
-    for i in range(0, 101):
-        orb_sift_match("part1-images/bigben_2.jpg", "part1-images/bigben_3.jpg", threshold=i/100)
-    #cluster_images(images)
+    #for i in range(0, 86, 5):
+        #orb_sift_match("part1-images/eiffel_1.jpg", "part1-images/eiffel_1.jpg", threshold=i/100)
+    cluster_images(images)
 
 
 if __name__ == '__main__':
@@ -109,4 +167,5 @@ if __name__ == '__main__':
     except:
         raise Exception(f'Usage: python3 part1.py <k>')
 
+    freeze_support()
     main(images, output, k)
