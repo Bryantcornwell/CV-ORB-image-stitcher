@@ -16,6 +16,7 @@ from tqdm import tqdm, trange
 
 
 SAVE_IMG = False
+MULTIPROCESS = True
 runtime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
 def euclidean_distance(point1, point2):
@@ -211,17 +212,20 @@ def check_pair_for_matches(pair):
 
 def cluster_images(images, k):
 
+    global MULTIPROCESS
     # Get all possible pairs of images
     pairings = [pair for pair in itertools.product(images, images) if pair[0] != pair[1] and pair[0] < pair[1]]
     # Determine whether they have an ORB/SIFT Match
     #thresholds = [i / 100 for i in range(40,91,10)]
     #print(len(pairings), len(thresholds))
-    matched_pairs = []
-    with Pool(8) as p:
-        #matched_pairs = tqdm(p.imap(generate_matched_pairs, cases), total=len(cases))
-        for result in tqdm(p.imap_unordered(check_pair_for_matches, pairings), total=len(pairings)):
-            matched_pairs.append(result)
-    
+    if MULTIPROCESS:
+        matched_pairs = []
+        with Pool(8) as p:
+            for result in tqdm(p.imap_unordered(check_pair_for_matches, pairings), total=len(pairings)):
+                matched_pairs.append(result)
+    else:
+        matched_pairs = [result for result in map(check_pair_for_matches, tqdm(pairings))]
+
     pd.DataFrame(matched_pairs, columns=['Image A', 'Image B', 'Distances']).to_csv('matches.csv', index=False)
 
     file_names = []
