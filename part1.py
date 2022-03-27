@@ -10,9 +10,11 @@ from functools import partial
 from PIL import ImageDraw, Image, ImageOps
 import cv2
 import numpy as np
+import pandas as pd
 from tqdm import tqdm, trange
 
 
+SAVE_IMG = False
 runtime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
 def euclidean_distance(point1, point2):
@@ -21,9 +23,11 @@ def euclidean_distance(point1, point2):
     distance = np.linalg.norm(point1 - point2)
     return distance
 
-def distance(point1, point2, kind='euclidean'):
+def distance(point1, point2, kind='hamming'):
     if kind == 'euclidean':
         return euclidean_distance(point1, point2)
+    elif kind == 'hamming':
+        return hamming_distance(point1, point2)
 
 def pad_image(image, top, bottom, left, right, color=(0,0,0)):
 
@@ -36,57 +40,11 @@ def pad_image(image, top, bottom, left, right, color=(0,0,0)):
     Image.fromarray(image).save('test.png')
     return np.asarray(padded_image.paste(Image.fromarray(image), (left, top)))
 
-def orb_sift_match(image_a, image_b, threshold=1):
-
-    image_a, image_b = map(Path, [image_a, image_b])
-    # Does some shit
-    # Returns Boolean (True or False)
-    # Possibly return distance to closest and second closest match too
-    # E.g True/False
-    # (True/False, distance, another_distance)
-
-    #return '_3' in image_b or '_5' in image_b
-
-    img1 = cv2.imread(str(image_a), cv2.IMREAD_GRAYSCALE)
-    #img1 = cv2.imread(str(image_a))
-    #print(img1.shape)
-    img2 = cv2.imread(str(image_b), cv2.IMREAD_GRAYSCALE)
-    #img2 = cv2.imread(str(image_b))
-    #print(img2.shape)
-    x_max = max(img1.shape[1], img2.shape[1])
-    y_max = max(img1.shape[0], img2.shape[0])
-    img1 = cv2.copyMakeBorder(img1, top=0, bottom=y_max-img1.shape[0], left=0, right=x_max-img1.shape[1], borderType=cv2.BORDER_CONSTANT)
-    img2 = cv2.copyMakeBorder(img2, top=0, bottom=y_max-img2.shape[0], left=0, right=x_max-img2.shape[1], borderType=cv2.BORDER_CONSTANT)
-
-    # you can increase nfeatures to adjust how many features to detect
-    orb = cv2.ORB_create(nfeatures=1000)
-
-    # detect features
-    """    if image_a.name in descriptors and image_a.name in keypoints:
-        (keypoints1, descriptors1) = keypoints[image_a.name], descriptors[image_a.name]
-    else:
-        (keypoints1, descriptors1) = orb.detectAndCompute(img1, None)
-        keypoints[image_a.name] = keypoints1
-        descriptors[image_a.name] = descriptors1
-    if image_b.name in descriptors and image_b.name in keypoints:
-        (keypoints2, descriptors2) = keypoints[image_b.name], descriptors[image_b.name]
-    else:
-        (keypoints2, descriptors2) = orb.detectAndCompute(img2, None)
-        keypoints[image_b.name] = keypoints2
-        descriptors[image_b.name] = descriptors2"""
-    (keypoints1, descriptors1) = orb.detectAndCompute(img1, None)
-    (keypoints2, descriptors2) = orb.detectAndCompute(img2, None)
-    keypoints1 = np.array([key_point.pt for key_point in keypoints1]).reshape(-1, 1, 2)
-    keypoints2 = np.array([key_point.pt for key_point in keypoints2]).reshape(-1, 1, 2)
-    # Test image
-    test_img = cv2.hconcat([img1, img2])
-    #print(type(test_img))
-    #draw = ImageDraw.Draw(test_img)
-    #cv2.imshow('Horizontal', test_img)
-    #cv2.waitKey(0)
-
+def old_match_points_code(descs1, descs2):
+    
     # Two for loops to iterate through each feature point and calculate the Euclidean Distance
     point_list = []
+    match_list = []
     distance_list = []
     #for p1, desc1 in tqdm(zip(keypoints1, descriptors1), desc='p1', position=2, leave=False, total=len(keypoints1), unit='points'):
 
@@ -133,8 +91,9 @@ def orb_sift_match(image_a, image_b, threshold=1):
         match = distance_closest / distance_2ndclosest
         # if match < threshold then it is a match
         if match < threshold:
-            distance_list.append(match)
-            point_list.append([p1, nearest_match_point, match])
+            match_list.append(match)
+            distance_list.append(nearest_distance)
+            point_list.append([p1, nearest_match_point, match, nearest_distance])
             cv2.line(test_img, p1[0].astype(int), ((nearest_match_point[0][0]+img1.shape[1]).astype(int),
                                                    nearest_match_point[0][1].astype(int)), (255, 0, 0))
             #draw.line((p1, (nearest_match[0]+img1.width, nearest_match[1])), fill=(255, 0, 0), width=7)
@@ -148,13 +107,88 @@ def orb_sift_match(image_a, image_b, threshold=1):
         if not cv2.imwrite(f'{output_path}/{image_a.name}_{image_b.name}.png', test_img):
             raise Exception("Image not saved.")
 
-    return point_list
+        raise Exception(type(point_list))
+        match_sum = np.sum(point_list[:,2], dtype=object)
+        raise Exception(str(point_list[:,2]) + '\n' + str(match_sum))
+        nearest_sum = np.sum(point_list[:,3], dtype=object)
+        return [True, image_a.name, image_b.name, match_sum, nearest_sum]
+    else:
+        return [False, image_a.name, image_b.name, np.inf, np.inf]
     #cv2.imwrite("lincoln-orb.jpg", img1)
 
-def generate_matched_pairs(case):
+def match_points(descs1, descs2):
 
-    pair = case[1]
-    threshold = case[0]
+    matcher = cv2.BFMatcher(cv2.NORM_HAMMING)
+
+    return matcher.knnMatch(descs1, descs2, 2)
+
+def orb_sift_match(image_a, image_b, threshold=0.99):
+
+    global SAVE_IMG
+
+    image_a, image_b = map(Path, [image_a, image_b])
+    # Does some shit
+    # Returns Boolean (True or False)
+    # Possibly return distance to closest and second closest match too
+    # E.g True/False
+    # (True/False, distance, another_distance)
+
+    #return '_3' in image_b or '_5' in image_b
+
+    img1 = cv2.imread(str(image_a), cv2.IMREAD_GRAYSCALE)
+    #img1 = cv2.imread(str(image_a))
+    #print(img1.shape)
+    img2 = cv2.imread(str(image_b), cv2.IMREAD_GRAYSCALE)
+    #img2 = cv2.imread(str(image_b))
+    #print(img2.shape)
+    x_max = max(img1.shape[1], img2.shape[1])
+    y_max = max(img1.shape[0], img2.shape[0])
+    img1 = cv2.copyMakeBorder(img1, top=0, bottom=y_max-img1.shape[0], left=0, right=x_max-img1.shape[1], borderType=cv2.BORDER_CONSTANT)
+    img2 = cv2.copyMakeBorder(img2, top=0, bottom=y_max-img2.shape[0], left=0, right=x_max-img2.shape[1], borderType=cv2.BORDER_CONSTANT)
+
+    # you can increase nfeatures to adjust how many features to detect
+    orb = cv2.ORB_create(nfeatures=1000)
+
+    # detect features
+    """    if image_a.name in descriptors and image_a.name in keypoints:
+        (keypoints1, descriptors1) = keypoints[image_a.name], descriptors[image_a.name]
+    else:
+        (keypoints1, descriptors1) = orb.detectAndCompute(img1, None)
+        keypoints[image_a.name] = keypoints1
+        descriptors[image_a.name] = descriptors1
+    if image_b.name in descriptors and image_b.name in keypoints:
+        (keypoints2, descriptors2) = keypoints[image_b.name], descriptors[image_b.name]
+    else:
+        (keypoints2, descriptors2) = orb.detectAndCompute(img2, None)
+        keypoints[image_b.name] = keypoints2
+        descriptors[image_b.name] = descriptors2"""
+    (keypoints1, descriptors1) = orb.detectAndCompute(img1, None)
+    (keypoints2, descriptors2) = orb.detectAndCompute(img2, None)
+    #keypoints1 = np.array([key_point.pt for key_point in keypoints1]).reshape(-1, 1, 2)
+    #keypoints2 = np.array([key_point.pt for key_point in keypoints2]).reshape(-1, 1, 2)
+    # Test image
+    test_img = cv2.hconcat([img1, img2])
+
+    desc_matches = match_points(descriptors1, descriptors2)
+    output_path = Path(f'outputs/{runtime}/{int(threshold*100)}')
+    output_img = cv2.drawMatchesKnn(img1, keypoints1, img2, keypoints2, desc_matches, None)
+    if SAVE_IMG:
+        if not output_path.exists():
+            output_path.mkdir(parents=True, exist_ok=True)
+        if not cv2.imwrite(f'{output_path}/{image_a.name}_{image_b.name}.png', output_img):
+            raise Exception(f'{output_path}/{image_a.name}_{image_b.name}.png')
+    point_matches = []
+
+    for closest, next_closest in desc_matches:
+
+        ratio = closest.distance / next_closest.distance
+        if ratio < threshold:
+            point_matches.append((closest.queryIdx, closest.trainIdx, ratio, closest.distance))
+
+    return point_matches
+
+def check_pair_for_matches(pair):
+
     """
     pairings = case[1]
     threshold = case[0]
@@ -165,29 +199,37 @@ def generate_matched_pairs(case):
     with open(f'{runtime}/matched_pairs_{threshold}.txt.', 'w+') as file:
         file.write('\n'.join(matched_pairs))
     """
-
-    return orb_sift_match(pair[0], pair[1], threshold=threshold)
+    
+    matches_ij = orb_sift_match(pair[0], pair[1])
+    matches_ji = orb_sift_match(pair[1], pair[0])
+    if not matches_ij or not matches_ji:
+        sums = np.inf
+    else:
+        sums = (np.sum(np.array(matches_ij)[:,3]) + np.sum(np.array(matches_ji)[:,3])) / (len(matches_ij) + len(matches_ji))
+    return (pair[0], pair[1], sums)
 
 def cluster_images(images, k):
 
     # Get all possible pairs of images
-    pairings = tuple([pair for pair in itertools.product(images, images) if pair[0] != pair[1] and pair[0] < pair[1]])
+    pairings = [pair for pair in itertools.product(images, images) if pair[0] != pair[1] and pair[0] < pair[1]]
     # Determine whether they have an ORB/SIFT Match
     #thresholds = [i / 100 for i in range(40,91,10)]
-    thresholds = [0.90]
-    cases = [(threshold, pair) for threshold in thresholds for pair in pairings]
     #print(len(pairings), len(thresholds))
     matched_pairs = []
     with Pool(8) as p:
         #matched_pairs = tqdm(p.imap(generate_matched_pairs, cases), total=len(cases))
-        for result in tqdm(p.imap_unordered(generate_matched_pairs, cases), total=len(cases)):
+        for result in tqdm(p.imap_unordered(check_pair_for_matches, pairings), total=len(pairings)):
             matched_pairs.append(result)
+    
+    return matched_pairs
 
 def main(images, output, k=10):
 
     #for i in range(0, 86, 5):
         #orb_sift_match("part1-images/eiffel_1.jpg", "part1-images/eiffel_1.jpg", threshold=i/100)
-    cluster_images(images, k=k)
+    clusters = cluster_images(images, k=k)
+    with open('output.txt', 'w+') as file:
+        file.write('\n'.join([str(value) for value in clusters]))
 
 
 if __name__ == '__main__':
