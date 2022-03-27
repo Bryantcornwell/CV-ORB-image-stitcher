@@ -257,8 +257,6 @@ def cluster_images(images, k):
             clusters[label] = []
         clusters[label].append(file_names[index])
 
-    print(clusters)
-
     return clusters
 
 def is_same_object(file_a, file_b):
@@ -291,10 +289,15 @@ def main(images, output, k=10):
     #for i in range(0, 86, 5):
         #orb_sift_match("part1-images/eiffel_1.jpg", "part1-images/eiffel_1.jpg", threshold=i/100)
     clusters = cluster_images(images, k=k)
-    print(accuracy_pairwise_cluster(clusters))
+    try:
+        print(f'Accuracy: {accuracy_pairwise_cluster(clusters)}')
+    except:
+        print(f'Accuracy: File pattern could not be determined for accuracy calculation.')
     with open('output.txt', 'w+') as file:
         #file.write('\n'.join([f'{label} | {clusters[label]}' for label in clusters]))
-        file.write('\n'.join([' '.join([value for value in clusters[label]]) for label in clusters]))
+        output_text = '\n'.join([' '.join([value for value in clusters[label]]) for label in clusters])
+        print(output_text)
+        file.write(output_text)
 
 if __name__ == '__main__':
     # Step 1 Determine ORB Matching
