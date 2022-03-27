@@ -242,7 +242,7 @@ def cluster_images(images, k):
         distances[idx1][idx2] = tup[2]
         distances[idx2][idx1] = tup[2]
 
-    clustering = AgglomerativeClustering(n_clusters=k, affinity='precomputed', compute_distances=True, linkage='complete')
+    clustering = AgglomerativeClustering(n_clusters=k, affinity='precomputed', linkage='complete')
 
     labels = clustering.fit(distances).labels_
 
