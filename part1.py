@@ -77,11 +77,12 @@ def cluster_images(images):
     # Select only matched pairs
     matched_pairs = [str(pair) for pair in matches if matches[pair]]
 
-    print('\n'.join(matched_pairs))
+    return '\n'.join(matched_pairs)
 
 def main(images, output, k=2):
 
-    cluster_images(images)
+    with open(output, 'w+') as file:
+        file.write(cluster_images(images))
 
 
 if __name__ == '__main__':
