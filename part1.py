@@ -11,6 +11,7 @@ from PIL import ImageDraw, Image, ImageOps
 import cv2
 import numpy as np
 import pandas as pd
+from sklearn.cluster import AgglomerativeClustering
 from tqdm import tqdm, trange
 
 
@@ -122,7 +123,7 @@ def match_points(descs1, descs2):
 
     return matcher.knnMatch(descs1, descs2, 2)
 
-def orb_sift_match(image_a, image_b, threshold=0.99):
+def orb_sift_match(image_a, image_b, threshold=0.75):
 
     global SAVE_IMG
 
@@ -203,7 +204,7 @@ def check_pair_for_matches(pair):
     matches_ij = orb_sift_match(pair[0], pair[1])
     matches_ji = orb_sift_match(pair[1], pair[0])
     if not matches_ij or not matches_ji:
-        sums = np.inf
+        sums = 1.7 * 10 ** 308
     else:
         sums = (np.sum(np.array(matches_ij)[:,3]) + np.sum(np.array(matches_ji)[:,3])) / (len(matches_ij) + len(matches_ji))
     return (pair[0], pair[1], sums)
@@ -221,25 +222,86 @@ def cluster_images(images, k):
         for result in tqdm(p.imap_unordered(check_pair_for_matches, pairings), total=len(pairings)):
             matched_pairs.append(result)
     
-    return matched_pairs
+    pd.DataFrame(matched_pairs, columns=['Image A', 'Image B', 'Distances']).to_csv('matches.csv', index=False)
+
+    file_names = []
+    for tup in matched_pairs:
+        if tup[0] not in file_names:
+            file_names.append(tup[0])
+        if tup[1] not in file_names:
+            file_names.append(tup[1])
+    file_names = list(pd.Series(file_names).drop_duplicates().sort_values())
+    file_dict = {}
+    for index, file_name in enumerate(file_names):
+        file_dict[file_name] = index
+
+    distances = np.zeros((len(file_names), len(file_names)))
+    for tup in matched_pairs:
+        idx1 = file_dict[tup[0]]
+        idx2 = file_dict[tup[1]]
+        distances[idx1][idx2] = tup[2]
+        distances[idx2][idx1] = tup[2]
+
+    clustering = AgglomerativeClustering(n_clusters=k, affinity='precomputed', compute_distances=True, linkage='complete')
+
+    labels = clustering.fit(distances).labels_
+
+    clusters = {}
+
+    for index, label in enumerate(labels):
+        if label not in clusters:
+            clusters[label] = []
+        clusters[label].append(file_names[index])
+
+    print(clusters)
+
+    return clusters
+
+def is_same_object(file_a, file_b):
+    # String sorcery
+
+    return Path(file_a).name.split('_')[0] == Path(file_b).name.split('_')[0]
+
+def accuracy_pairwise_cluster(clusters):
+
+    files = {}
+    for label in clusters:
+        for file in clusters[label]:
+            files[file] = label
+
+    tp = 0
+    tn = 0
+    n = len(files)
+
+    for file_a in files:
+        for file_b in files:
+            if file_a != file_b:
+                same_object = is_same_object(file_a, file_b)
+                tp += same_object * (files[file_a] == files[file_b])
+                tn += (1-same_object) * (files[file_a] != files[file_b])
+
+    return (tp+tn) / (n * (n-1))
+
 
 def main(images, output, k=10):
 
     #for i in range(0, 86, 5):
         #orb_sift_match("part1-images/eiffel_1.jpg", "part1-images/eiffel_1.jpg", threshold=i/100)
     clusters = cluster_images(images, k=k)
+    print(accuracy_pairwise_cluster(clusters))
     with open('output.txt', 'w+') as file:
-        file.write('\n'.join([str(value) for value in clusters]))
+        #file.write('\n'.join([f'{label} | {clusters[label]}' for label in clusters]))
+        file.write('\n'.join([' '.join([value for value in clusters[label]]) for label in clusters]))
 
 
 if __name__ == '__main__':
     # Step 1 Determine ORB Matching
     try:
-        k = sys.argv[1]
+        k = int(sys.argv[1])
         images = sys.argv[2:-1]
         output = sys.argv[-1]
     except:
-        raise Exception(f'Usage: python3 part1.py <k>')
+        raise Exception(f'Usage: python3 part1.py <k> <img_1> <img_2> ... <img_n> <output_file>')
 
     freeze_support()
     main(images, output, k)
