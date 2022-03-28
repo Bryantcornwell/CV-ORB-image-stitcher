@@ -20,27 +20,29 @@ MULTIPROCESS = True
 runtime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
 def euclidean_distance(point1, point2):
-    #print(type(cv2.KeyPoint_convert(keypoints=point1), type(point2)))
-    #distance = np.sqrt(np.sum(np.power(point1 - point2, 2)))
-    distance = np.linalg.norm(point1 - point2)
-    return distance
+    # Deprecated, no longer used
+    
+    return np.linalg.norm(point1 - point2)
 
-def distance(point1, point2, kind='hamming'):
+
+def distance(point1, point2, kind='euclidean'):
+    # Deprecated, no longer used
+
     if kind == 'euclidean':
         return euclidean_distance(point1, point2)
-    elif kind == 'hamming':
-        return hamming_distance(point1, point2)
+    else:
+        raise Exception(f'{kind} is not an acceptable kind for distance(point1, point2, kind)')
+
 
 def pad_image(image, top, bottom, left, right, color=(0,0,0)):
-
-    Image.fromarray(image).save('test.png')
-    cv2.imwrite('test2.png', image)
+    # Deprecated, no longer used
 
     width_padded = image.shape[1] + left + right
     height_padded = image.shape[0] + top + bottom
     padded_image = Image.new('RGB', (width_padded, height_padded), color)
     Image.fromarray(image).save('test.png')
     return np.asarray(padded_image.paste(Image.fromarray(image), (left, top)))
+
 
 def old_match_points_code(descs1, descs2):
     
@@ -124,6 +126,10 @@ def match_points(descs1, descs2):
 
     return matcher.knnMatch(descs1, descs2, 2)
 
+def load_image(image_path: Path):
+
+    return cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
+
 def orb_sift_match(image_a, image_b, threshold=0.75):
 
     global SAVE_IMG
@@ -137,10 +143,9 @@ def orb_sift_match(image_a, image_b, threshold=0.75):
 
     #return '_3' in image_b or '_5' in image_b
 
-    img1 = cv2.imread(str(image_a), cv2.IMREAD_GRAYSCALE)
-    #img1 = cv2.imread(str(image_a))
-    #print(img1.shape)
-    img2 = cv2.imread(str(image_b), cv2.IMREAD_GRAYSCALE)
+    img1 = load_image(image_a)
+    img2 = load_image(image_b)
+    
     #img2 = cv2.imread(str(image_b))
     #print(img2.shape)
     x_max = max(img1.shape[1], img2.shape[1])
@@ -215,18 +220,12 @@ def cluster_images(images, k):
     global MULTIPROCESS
     # Get all possible pairs of images
     pairings = [pair for pair in itertools.product(images, images) if pair[0] != pair[1] and pair[0] < pair[1]]
-    # Determine whether they have an ORB/SIFT Match
-    #thresholds = [i / 100 for i in range(40,91,10)]
-    #print(len(pairings), len(thresholds))
-    if MULTIPROCESS:
-        matched_pairs = []
-        with Pool(8) as p:
-            for result in tqdm(p.imap_unordered(check_pair_for_matches, pairings), total=len(pairings)):
-                matched_pairs.append(result)
-    else:
-        matched_pairs = [result for result in map(check_pair_for_matches, tqdm(pairings))]
 
-    pd.DataFrame(matched_pairs, columns=['Image A', 'Image B', 'Distances']).to_csv('matches.csv', index=False)
+    if MULTIPROCESS:
+        with Pool(8) as p:
+            matched_pairs = list(tqdm(p.imap_unordered(check_pair_for_matches, pairings), total=len(pairings)))
+    else:
+        matched_pairs = list(map(check_pair_for_matches, tqdm(pairings)))
 
     file_names = []
     for tup in matched_pairs:
