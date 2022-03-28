@@ -120,15 +120,18 @@ def old_match_points_code(descs1, descs2):
         return [False, image_a.name, image_b.name, np.inf, np.inf]
     #cv2.imwrite("lincoln-orb.jpg", img1)
 
+
 def match_points(descs1, descs2):
 
     matcher = cv2.BFMatcher(cv2.NORM_HAMMING)
 
     return matcher.knnMatch(descs1, descs2, 2)
 
+
 def load_image(image_path: Path):
 
     return cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
+
 
 def orb_sift_match(image_a, image_b, threshold=0.75):
 
@@ -194,6 +197,7 @@ def orb_sift_match(image_a, image_b, threshold=0.75):
 
     return point_matches
 
+
 def check_pair_for_matches(pair):
 
     """
@@ -214,6 +218,7 @@ def check_pair_for_matches(pair):
     else:
         sums = (np.sum(np.array(matches_ij)[:,3]) + np.sum(np.array(matches_ji)[:,3])) / (len(matches_ij) + len(matches_ji))
     return (pair[0], pair[1], sums)
+
 
 def cluster_images(images, k):
 
@@ -258,10 +263,12 @@ def cluster_images(images, k):
 
     return clusters
 
+
 def is_same_object(file_a, file_b):
     # String sorcery
 
     return Path(file_a).name.split('_')[0] == Path(file_b).name.split('_')[0]
+
 
 def accuracy_pairwise_cluster(clusters):
 
@@ -283,20 +290,19 @@ def accuracy_pairwise_cluster(clusters):
 
     return (tp+tn) / (n * (n-1))
 
+
 def main(images, output, k=10):
 
-    #for i in range(0, 86, 5):
-        #orb_sift_match("part1-images/eiffel_1.jpg", "part1-images/eiffel_1.jpg", threshold=i/100)
     clusters = cluster_images(images, k=k)
     try:
         print(f'Accuracy: {accuracy_pairwise_cluster(clusters)}')
     except:
         print(f'Accuracy: File pattern could not be determined for accuracy calculation.')
     with open('output.txt', 'w+') as file:
-        #file.write('\n'.join([f'{label} | {clusters[label]}' for label in clusters]))
         output_text = '\n'.join([' '.join([value for value in clusters[label]]) for label in clusters])
         print(output_text)
         file.write(output_text)
+
 
 if __name__ == '__main__':
     # Step 1 Determine ORB Matching
