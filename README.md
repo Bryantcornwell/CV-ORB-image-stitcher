@@ -30,7 +30,7 @@ __ADD MORE IMAGES/ PART1 DISCUSSION POINTS__
 
 The runtime of part1.py using the orb matching algorithm took around 3 hours to run with multiprocessing enabled. While looking through the Q&A board, the class was given permission to use the cv2.BFMatcher().knnMatch() function from the openCV library. This decreased the computational runtime to around 3 minutes.
 
-Overall, part1.py could be further improved by hyperparameter tuning the clustering algorithm and feature matching threshold. Future improvements to the original feature matching algorithm could provide promising results, but could be a long development due to the current computational runtime.
+Overall, part1.py could be further improved by hyperparameter tuning the clustering algorithm and feature matching threshold. Future improvements to the original feature matching algorithm could provide promising results, but could result in a long development due to the current computational runtime.
 
 ### part2.py
 ### part3.py
@@ -39,9 +39,12 @@ Overall, part1.py could be further improved by hyperparameter tuning the cluster
 
 ## Acknowledges
 ### Bryant Cornwell 
+Co-wrote and tested part1.py with Seth. Contributed to discussions on part2.py. 
+For the report, Discussion, Methods -> Part1 and general layout of report.
 ### Seth Mize
 ### Lucas Franz
 
 ## References
 Module 6.7 video: https://iu.instructure.com/courses/2032639/pages/6-dot-7-image-and-feature-matching?module_item_id=25895156
+Theory on opencv Matcher: https://docs.opencv.org/3.4/dc/dc3/tutorial_py_matcher.html
 
