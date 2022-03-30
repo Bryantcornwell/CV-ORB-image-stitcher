@@ -6,11 +6,31 @@ import numpy as np
 
 
 
-def Apply_Transformation(img, transform_array):
+TRANSFORMATIONS = [
+
+    # Apply Test Transform to Lincoln
+    np.array([
+        [0.907, 0.258, -182],
+        [-0.153, 1.44, 58],
+        [-0.000306, 0.000731, 1]
+    ]),
+
+    # Apply a Simple Translation
+    np.array([
+        [1, 0, 100],
+        [0, 1, 200],
+        [0, 0, 1]
+    ])
+
+]
+
+
+
+def Apply_Transformation(img, transform_idx):
 
     # Get transformation to apply
     # Take the inverse to perform inverse warping
-    transform_array = np.linalg.inv(transform_array)
+    transform_array = np.linalg.inv(TRANSFORMATIONS[transform_idx])
 
     # Initialize new image
     new_img = np.zeros(shape=img.shape)
@@ -90,7 +110,7 @@ def Apply_Interpolation(x, y, img):
     else: return img[int(y), int(x)]
 
 
-def Build_Matching_Coordinates(n):
+def Build_Matching_Coordinates(dof):
     matching_points = []
 
     i = 5
@@ -98,42 +118,12 @@ def Build_Matching_Coordinates(n):
         matching_points += [[
             # Need to formation matching point arrays for linalg.solve
             # Degrees of freedom effect homogenous coordinate size?
-            (sys.argv[i], sys.argv[i+1]), 
-            (sys.argv[i+2], sys.argv[i+3])
+            [sys.argv[i], sys.argv[i+1], 1], 
+            [sys.argv[i+2], sys.argv[i+3], 1]
         ]]
         i += 4
 
-        if len(matching_points) == n:
-            break
-
-    return matching_points
-
-
-
-def Build_Transformation_Matrix(matching_coordinates):
-
-    equation_array = np.array([])
-    answer_array = np.array([])
-    results_array = np.array([])
-
-    if len(matching_coordinates) == 1:
-
-        return 
-
-    if len(matching_coordinates) == 2:
-
-        return 
-
-    if len(matching_coordinates) == 3:
-
-        return 
-
-    if len(matching_coordinates) == 4:
-
-        return 
-
-
-    return results_array
+    return np.array(matching_points)
 
 
 
@@ -158,7 +148,7 @@ if __name__ == '__main__':
         if len(sys.argv) < 7:
             print('Please include one coordinate match for translation transformation')
         else:
-            matching_coordinates = Build_Matching_Coordinates(passed_n)
+            matching_coordinates = Build_Matching_Coordinates(2)
             degrees_of_freedom = 2
 
     # If passed_n = 2 (Euclidean)
@@ -168,7 +158,7 @@ if __name__ == '__main__':
         if len(sys.argv) < 11:
             print('Please include two coordinate matches for Euclidean transformation')
         else:
-            matching_coordinates = Build_Matching_Coordinates(passed_n)
+            matching_coordinates = Build_Matching_Coordinates(3)
             degrees_of_freedom = 3
 
     # If passed_n = 3 (Affine)
@@ -178,7 +168,7 @@ if __name__ == '__main__':
         if len(sys.argv) < 15:
             print('Please include three coordinate matches for Affine transformation')
         else:
-            matching_coordinates = Build_Matching_Coordinates(passed_n)
+            matching_coordinates = Build_Matching_Coordinates(6)
             degrees_of_freedom = 6
 
     # If passed_n = 4 (Projective)
@@ -188,7 +178,7 @@ if __name__ == '__main__':
         if len(sys.argv) < 19:
             print('Please include four coordinate matches for Projection transformation')
         else:
-            matching_coordinates = Build_Matching_Coordinates(passed_n)
+            matching_coordinates = Build_Matching_Coordinates(8)
             degrees_of_freedom = 8
 
     # Invalid n value
@@ -200,14 +190,14 @@ if __name__ == '__main__':
     # If coordinates not empty, apply transformation
     if matching_coordinates.shape[0] > 0:
 
-        # Get transformation matrix
-        transformation_matrix = Build_Transformation_Matrix(matching_coordinates)
+        # Get translation matrix
+        # translation_matrix = Build_Translation_Matrix(matching_coordinates, degrees_of_freedom)
 
         # Get first image as array
         first_img = cv2.imread(first_img)
 
         # Apply transformation
-        output = Apply_Transformation(first_img, transformation_matrix)
+        output = Apply_Transformation(first_img, passed_n)
 
         # Save output
         cv2.imwrite(output_img, output)
