@@ -37,6 +37,15 @@ The runtime of part1.py using the orb matching algorithm took around 3 hours to 
 Overall, part1.py could be further improved by hyperparameter tuning the clustering algorithm and feature matching threshold. Future improvements to the original feature matching algorithm could provide promising results, but could result in a long development due to the current computational runtime.
 
 ### part2.py
+
+Table of Image transformations:
+
+|                                     Translation                                       |                                             Scaling                                                   |
+| :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |
+| <img src="" alt="image_name" width="400"/>                                            | <img src="" alt="image_name" width="400"/>                                                            |
+|                                     __Skewing__                                           |                                              __Projection__                                               |
+| <img src="" alt="image_name" width="400"/>                                            | <img src="" alt="image_name" width="400"/>                                                            |
+
 Difficulties:
 - Solving the system of equations of the projective transform matrix
 ### part3.py
