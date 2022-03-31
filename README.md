@@ -11,14 +11,25 @@ Combine the feature point matching along with RANSAC and image transformations t
 
 ## Methods
 ### part1.py
-The first task of part1.py was to develop a function that could apply ORB detection on two images and matches the ORB descriptors between each image using a ratio of the distances between the nearest and second nearest match given a threshold. 
+Run the code from the terminal using the following format on the linux server and ensure to type the file names for the '< >' desired arguments below:
 
     ./a2 part1 <k> images/*.png outputfile_txt
 
+The first task of part1.py was to develop a function that could apply ORB detection on two images and matches the ORB descriptors between each image using a ratio of the distances between the nearest and second nearest match given a threshold. 
+
+
 ### part2.py
+Run the code from the terminal using the following format on the linux server and ensure to type the file names for the '< >' desired arguments below:
+
     ./a2 part2 n img_1.png img_2.png img_output.png img1_x1,img1_y1 img2_x1,img2_x1 ... img1_xn,img1_yn img2_xn,img2_yn
+
+
 ### part3.py
+Run the code from the terminal using the following format on the linux server and ensure to type the file names for the '< >' desired arguments below:
+
     ./a2 part3 image_1.jpg image_2.jpg output.jpg
+
+
 ## Results
 
 ## Discussion
@@ -55,7 +66,7 @@ Difficulties:
 ## Acknowledges
 ### Bryant Cornwell 
 Co-wrote and tested part1.py with Seth. Contributed to discussions on part2.py. 
-For the report, Discussion, Methods -> Part1 and general layout of report.
+For the report, Introduction, Discussion, Methods -> Part1 and general layout of report.
 ### Seth Mize
 ### Lucas Franz
 
