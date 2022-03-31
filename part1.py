@@ -139,8 +139,8 @@ def orb_sift_match(image_a, image_b, threshold=0.75):
     
     x_max = max(img1.shape[1], img2.shape[1])
     y_max = max(img1.shape[0], img2.shape[0])
-    img1 = cv2.copyMakeBorder(img1, top=0, bottom=y_max-img1.shape[0], left=0, right=x_max-img1.shape[1], borderType=cv2.BORDER_CONSTANT)
-    img2 = cv2.copyMakeBorder(img2, top=0, bottom=y_max-img2.shape[0], left=0, right=x_max-img2.shape[1], borderType=cv2.BORDER_CONSTANT)
+    #img1 = cv2.copyMakeBorder(img1, top=0, bottom=y_max-img1.shape[0], left=0, right=x_max-img1.shape[1], borderType=cv2.BORDER_CONSTANT)
+    #img2 = cv2.copyMakeBorder(img2, top=0, bottom=y_max-img2.shape[0], left=0, right=x_max-img2.shape[1], borderType=cv2.BORDER_CONSTANT)
 
     # you can increase nfeatures to adjust how many features to detect
     orb = cv2.ORB_create(nfeatures=1000)
@@ -148,11 +148,11 @@ def orb_sift_match(image_a, image_b, threshold=0.75):
     (keypoints1, descriptors1) = orb.detectAndCompute(img1, None)
     (keypoints2, descriptors2) = orb.detectAndCompute(img2, None)
     # Test image
-    test_img = cv2.hconcat([img1, img2])
+    #test_img = cv2.hconcat([img1, img2])
 
     desc_matches = match_points(descriptors1, descriptors2)
-    output_path = Path(f'outputs/{runtime}/{int(threshold*100)}')
-    output_img = cv2.drawMatchesKnn(img1, keypoints1, img2, keypoints2, desc_matches, None)
+    #output_path = Path(f'outputs/{runtime}/{int(threshold*100)}')
+    #output_img = cv2.drawMatchesKnn(img1, keypoints1, img2, keypoints2, desc_matches, None)
     if SAVE_IMG:
         if not output_path.exists():
             output_path.mkdir(parents=True, exist_ok=True)
