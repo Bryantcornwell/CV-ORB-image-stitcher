@@ -47,10 +47,7 @@ Four separate functions are used to solve for the 4 different transformation. Th
 - Affine Diagram
 - Projection Diagram
 
-Once the transformation matrix is solved...
-
-(Utilized inverse warping)
-(Utilized bilinear interpolation)
+The solved transformation matrix is the inverse transformation which leads to the next step of the code of applying inverse warping to the image that we are trying to transform into the perspective of the target image. In inverse warping we loop through the pixels of the transformed image, apply the inverse transform matrix, and lookup the corresponding coordinate from the original image. Applying forward warping has the potential to give a fractional destination pixel, resulting in holes in the image. Using inversing warping we still get a fractional original coordinate, but we can then apply bilinear interpolation to get a weighted contribution from the surrounding original pixels to create a new proportional pixel.
 
 ### part3.py
 Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the '< >' desired arguments below:
