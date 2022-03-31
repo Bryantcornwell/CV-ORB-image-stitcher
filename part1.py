@@ -153,11 +153,11 @@ def orb_sift_match(image_a, image_b, threshold=0.75):
     desc_matches = match_points(descriptors1, descriptors2)
     #output_path = Path(f'outputs/{runtime}/{int(threshold*100)}')
     #output_img = cv2.drawMatchesKnn(img1, keypoints1, img2, keypoints2, desc_matches, None)
-    if SAVE_IMG:
-        if not output_path.exists():
-            output_path.mkdir(parents=True, exist_ok=True)
-        if not cv2.imwrite(f'{output_path}/{image_a.name}_{image_b.name}.png', output_img):
-            raise Exception(f'{output_path}/{image_a.name}_{image_b.name}.png')
+    #if SAVE_IMG:
+    #    if not output_path.exists():
+    #        output_path.mkdir(parents=True, exist_ok=True)
+    #    if not cv2.imwrite(f'{output_path}/{image_a.name}_{image_b.name}.png', output_img):
+    #        raise Exception(f'{output_path}/{image_a.name}_{image_b.name}.png')
     point_matches = []
 
     for closest, next_closest in desc_matches:
