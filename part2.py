@@ -98,8 +98,8 @@ def Build_Matching_Coordinates(n):
         matching_points += [[
             # Need to formation matching point arrays for linalg.solve
             # Degrees of freedom effect homogenous coordinate size?
-            (sys.argv[i], sys.argv[i+1]), 
-            (sys.argv[i+2], sys.argv[i+3])
+            (int(sys.argv[i]), int(sys.argv[i+1])), 
+            (int(sys.argv[i+2]), int(sys.argv[i+3]))
         ]]
         i += 4
 
@@ -109,31 +109,105 @@ def Build_Matching_Coordinates(n):
     return matching_points
 
 
+def Get_Translation_Matrix(point_pairs):
 
-def Build_Transformation_Matrix(matching_coordinates):
+    a = point_pairs[0][1][0] - point_pairs[0][0][0]
+    b = point_pairs[0][1][1] - point_pairs[0][0][1]
 
-    equation_array = np.array([])
-    answer_array = np.array([])
-    results_array = np.array([])
+    transition_matrix = np.array([[1, 0, a],
+                                   [0, 1, b],
+                                   [0, 0, 1]])
 
-    if len(matching_coordinates) == 1:
-
-        return 
-
-    if len(matching_coordinates) == 2:
-
-        return 
-
-    if len(matching_coordinates) == 3:
-
-        return 
-
-    if len(matching_coordinates) == 4:
-
-        return 
+    return transition_matrix
 
 
-    return results_array
+def Get_Euclidean_Matrix(point_pairs):
+
+    solution_matrix = []
+    solution_vector = []
+    for pair in point_pairs:
+        x, y = pair[0]
+        x_, y_ = pair[1]
+
+        solution_matrix += [[x, -1 * y, 1, 0],
+                            [y,      x, 0, 1]]
+        solution_vector += [x_, y_]
+
+    solution_matrix = np.array(solution_matrix)
+    solution_vector = np.array(solution_vector)
+
+    a, b, c, d = np.linalg.solve(solution_matrix, solution_vector)
+
+    transition_matrix = np.array([[a, -b, c],
+                                  [b,  a, d],
+                                  [0,  0, 1]])
+    return transition_matrix
+
+
+def Get_Affine_Matrix(point_pairs):
+
+    solution_matrix = []
+    solution_vector = []
+    for pair in point_pairs:
+        x, y = pair[0]
+        x_, y_ = pair[1]
+
+        solution_matrix += [[x, y, 1, 0, 0, 0],
+                            [0, 0, 0, x, y, 1]]
+        solution_vector += [x_, y_]
+
+    solution_matrix = np.array(solution_matrix)
+    solution_vector = np.array(solution_vector)
+
+    a, b, c, d, e, f = np.linalg.solve(solution_matrix, solution_vector)
+
+    transition_matrix = np.array([[a, b, c],
+                                  [d, e, f],
+                                  [0,  0, 1]])
+    return transition_matrix
+
+
+def Get_Projection_Matrix(point_pairs):
+
+    solution_matrix = []
+    solution_vector = []
+    for index, pair in enumerate(point_pairs):
+        x, y = pair[0]
+        x_, y_ = pair[1]
+
+        z_x = [0, 0, 0, 0]
+        z_y = [0, 0, 0, 0]
+        z_1 = [0, 0, 0, 0]
+        z_x[index], z_y[index], z_1[index] = -x_, -y_, -1
+
+        solution_matrix += [[x, y, 1, 0, 0, 0, 0, 0] + z_x,
+                            [0, 0, 0, x, y, 1, 0, 0] + z_y,
+                            [0, 0, 0, 0, 0, 0, x, y] + z_1]
+        solution_vector += [0, 0, -1]
+
+    solution_matrix = np.array(solution_matrix)
+    solution_vector = np.array(solution_vector)
+
+    a, b, c, d, e, f, g, h, _, _, _, _ = np.linalg.solve(solution_matrix, solution_vector)
+
+    transition_matrix = np.array([[a, b, c],
+                                  [d, e, f],
+                                  [g, h, 1]])
+    return transition_matrix
+
+
+def Get_Transition_Matrix(n, point_pairs):
+
+    if n == 1 and len(point_pairs) >= 1:
+        return Get_Translation_Matrix(point_pairs)
+    elif n == 2 and len(point_pairs) >= 2:
+        return Get_Euclidean_Matrix(point_pairs)
+    elif n == 3 and len(point_pairs) >= 3:
+        return Get_Affine_Matrix(point_pairs)
+    elif n == 4 and len(point_pairs) >= 4:
+        return Get_Projection_Matrix(point_pairs)
+    else:
+        raise Exception(f'Passed N and Pairs Received Do Not Match.\nPassed N {n}, Number of Pairs: {len(point_pairs)}')
 
 
 
@@ -148,60 +222,20 @@ if __name__ == '__main__':
     second_img = sys.argv[3]
     output_img = sys.argv[4]
 
-    matching_coordinates = np.array()
-    degrees_of_freedom = 0
+    passed_coordinates = sys.argv[5:]
 
-    # If passed_n = 1 (Translation)
-    # 2 degrees of freedom
-    # Need 1 coordinate
-    if passed_n == 1:
-        if len(sys.argv) < 7:
-            print('Please include one coordinate match for translation transformation')
-        else:
-            matching_coordinates = Build_Matching_Coordinates(passed_n)
-            degrees_of_freedom = 2
+    if len(passed_coordinates) > 0:
 
-    # If passed_n = 2 (Euclidean)
-    # 3 degrees of freedom
-    # Need 2 coordinates
-    elif passed_n == 2:
-        if len(sys.argv) < 11:
-            print('Please include two coordinate matches for Euclidean transformation')
-        else:
-            matching_coordinates = Build_Matching_Coordinates(passed_n)
-            degrees_of_freedom = 3
+        matching_coordinates = []
 
-    # If passed_n = 3 (Affine)
-    # 6 degrees of freedom
-    # Need 3 coordinates
-    elif passed_n == 3:
-        if len(sys.argv) < 15:
-            print('Please include three coordinate matches for Affine transformation')
-        else:
-            matching_coordinates = Build_Matching_Coordinates(passed_n)
-            degrees_of_freedom = 6
+        for i in range(0, len(passed_coordinates), 2):
+            matching_coordinates += [[passed_coordinates[i].split(','), passed_coordinates[i+1].split(',')]]
 
-    # If passed_n = 4 (Projective)
-    # 8 degrees of freedom
-    # Need 4 coordinates
-    elif passed_n == 4:
-        if len(sys.argv) < 19:
-            print('Please include four coordinate matches for Projection transformation')
-        else:
-            matching_coordinates = Build_Matching_Coordinates(passed_n)
-            degrees_of_freedom = 8
-
-    # Invalid n value
-    else:
-        print('Please enter acceptable n value')
-        print('1 = Translation\n2 = Euclidean\n3 = Affine\n4 = Projective')
-
-
-    # If coordinates not empty, apply transformation
-    if matching_coordinates.shape[0] > 0:
+        matching_coordinates = np.array(matching_coordinates)
+        matching_coordinates = matching_coordinates.astype('int')
 
         # Get transformation matrix
-        transformation_matrix = Build_Transformation_Matrix(matching_coordinates)
+        transformation_matrix = Get_Transition_Matrix(passed_n, matching_coordinates)
 
         # Get first image as array
         first_img = cv2.imread(first_img)
