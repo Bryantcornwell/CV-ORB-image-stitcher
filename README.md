@@ -16,10 +16,14 @@ Run the code from the terminal using the following format on the linux server an
     ./a2 part1 <k> images/*.png outputfile_txt
 
 The first task of part1.py was to load two images using OpenCV library and create a border around each image based on the largest image width and height. The border was used for image concatenation when testing both images side by side. 
-An orb object is created to detect 1000 features within each image and extract points & descriptors for each feature. Explain the matching process 
-cv2.BFMatcher() with hamming distance
+An orb object is created to detect 1000 features within each image and extract points & descriptors for each feature. 
+To check for a match, you iterate through all pairing of orbs between image A and image B and for each pairing we calculate the hamming distance. 
+Next we go through each orb and determine the nearest and second nearest descriptors in order to determine if the match is good or not.
+The final matching algorithm we used to perform this matching is a brute force matcher from opencv (cv2.BFMatcher()).
+To check for a good match, the ratio of closest and next_closest hamming distances compared to a threshold of 0.75 for each match. If the ratio is lower than the threshold, it is considered a good match and the corresponding points are passed to a list.
+
+For the clustering algorithm,
  
-and matches the ORB descriptors between each image using a ratio of the distances between the nearest and second nearest match given a threshold, 0.75.  
 
 
 ### part2.py
