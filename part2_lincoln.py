@@ -137,6 +137,7 @@ if __name__ == '__main__':
     first_img = sys.argv[2]
     second_img = sys.argv[3]
     output_img = sys.argv[4]
+    points = [map(int, point.split(',')) for point in sys.argv[5:]]
 
     matching_coordinates = np.array()
     degrees_of_freedom = 0
