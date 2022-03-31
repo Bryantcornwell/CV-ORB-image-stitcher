@@ -10,7 +10,7 @@ def Apply_Transformation(img, transform_array):
 
     # Get transformation to apply
     # Take the inverse to perform inverse warping
-    transform_array = np.linalg.inv(transform_array)
+    # transform_array = np.linalg.inv(transform_array)
 
     # Initialize new image
     new_img = np.zeros(shape=img.shape)
