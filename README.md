@@ -3,6 +3,8 @@ Group Members: Seth Mize, Lucas Franz, Bryant Cornwell
 
 ## Abstract
 
+Due to smart phone and the Digital Age, image transformation operations have become more accessible. Image panoramics, image matching, etc. are a few applications of these operations. This report aims to match images using ORB feature point detection, perform image transformation operations to change image prospectives, and automatically stitch two similar images together utilizing RANSAC. The pairwise clustering accuracy for matching images yielded 82% utilizing OpenCV's brute force matching algorithm.
+
 ## Introduction
 
 Utilizing OpenCV's ORB detection, we matched feature points between two images given a threshold to determine good matches. Paired images that matched well were grouped using an agglomerative clustering algorithm from the sklearn.cluster library and graded based on the pairwise clustering accuracy. 
