@@ -3,6 +3,8 @@ Group Members: Seth Mize, Lucas Franz, Bryant Cornwell
 
 ## Abstract
 
+Due to the smartphone and Digital Age, image transformation operations have become more accessible. Image panoramics, image matching, etc. are a few applications of these operations. This report aims to match images using ORB feature point detection, perform image transformation operations to change image prospectives, and automatically stitch two similar images together utilizing RANSAC. The pairwise clustering accuracy for matching images yielded 82% utilizing OpenCV's brute force matching algorithm.
+
 ## Introduction
 
 Utilizing OpenCV's ORB detection, we matched feature points between two images given a threshold to determine good matches. Paired images that matched well were grouped using an agglomerative clustering algorithm from the sklearn.cluster library and graded based on the pairwise clustering accuracy. 
@@ -11,7 +13,7 @@ Finally, we combined the feature point matching along with RANSAC and image tran
 
 ## Methods
 ### part1.py
-Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the '< >' desired arguments below:
+Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the desired arguments below:
 
     ./a2 part1 <k> images/*.png outputfile_txt
 
@@ -23,13 +25,16 @@ The final matching algorithm we used to perform this matching is a brute force m
 To check for a good match, the ratio of closest and next_closest hamming distances compared to a threshold of 0.75 for each match. If the ratio is lower than the threshold, it is considered a good match and the corresponding points are passed to a list.
 
 The assignment hinted the use of agglomerative clustering since we had pairwise distances between objects and not a feature for each image.
-Given a value k and the inputted images, we fit the orb pair distances utilizing sklearn's agglomerative clustering algorithm to generate clusters. 
-Each cluster is 
- 
+Given the input number of clusters, k, and the input images, we fit the orb pair distances utilizing sklearn's agglomerative clustering algorithm to generate clusters. 
+Each cluster is added to a dictionary and used to determine the pairwise clustering accuracy.
+The accuracy is computed by adding the number of true positive and true negatives together and dividing by the total number of possible pairs of images. 
+A pair is a true positive is when a pair has the same image name and is in the same cluster.
+A pair is a true negative is when a pair does not have the same image name and is not in the same cluster.
+This part concludes by printing the pairwise clustering accuracy and writing the clusters separated by a newline to an output.txt file.
 
 
 ### part2.py
-Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the '< >' desired arguments below:
+Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the desired arguments below:
 
     ./a2 part2 n img_1.png img_2.png img_output.png img1_x1,img1_y1 img2_x1,img2_x1 ... img1_xn,img1_yn img2_xn,img2_yn
 
@@ -42,7 +47,7 @@ This program relies upon the passed argument for the type of transformation that
 
 Given the passed value of 'N', an equal number of matching coordinate pairs must be pass ((beginning x, beginning y), (target x, target y)). The program first ensures coordinate matches are included and then validates that there is an appropriate number of pairs to solve for the desired transformation.
 
-Four separate functions are used to solve for the 4 different transformation. The following diagrams from (credit professors slides) and (online resource from bryant) were used to create the corresponding linear system of equations to solve for the underlying variables representing the degrees of freedom for each transformation:
+Four separate functions are used to solve for the 4 different transformation. The following diagrams from Module 7 Image Transformation powerpoint slides [3] and 2D Projective Geometry theory resource [4] were used to create the corresponding linear system of equations to solve for the underlying variables representing the degrees of freedom for each transformation:
 
 - Translation Diagram
 - Euclidean Diagram
@@ -52,23 +57,33 @@ Four separate functions are used to solve for the 4 different transformation. Th
 The solved transformation matrix is the inverse transformation which leads to the next step of the code of applying inverse warping to the image that we are trying to transform into the perspective of the target image. In inverse warping we loop through the pixels of the transformed image, apply the inverse transform matrix, and lookup the corresponding coordinate from the original image. Applying forward warping has the potential to give a fractional destination pixel, resulting in holes in the image. Using inversing warping we still get a fractional original coordinate, but we can then apply bilinear interpolation to get a weighted contribution from the surrounding original pixels to create a new proportional pixel.
 
 ### part3.py
-Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the '< >' desired arguments below:
+Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the desired arguments below:
 
     ./a2 part3 image_1.jpg image_2.jpg output.jpg
 
 
 ## Results
 
+The pairwise clustering accuracy from the part1 feature matching algorithm give 82%.
+
+
 ## Discussion
 ### part1.py
-There were some difficulties with that were encountered in the early stages of the orb matching algorithm. The first version of the algorithm was written based on the information gather from the image and feature matching video in Module 6 Feature Points. The initial debugging consistent of changing the keypoint data type in order to carry out mathematical operations. The first visualization of the feature point matching algorithm in the figure below gave an idea of apparent semantic issues. Utilizing a high threshold, many of the orbs from the first image were mapped to similar location(s). The root causes were that the second nearest matches were not updated correctly, and the keypoints were used as the descriptors in the distance calculations.
+There were some difficulties with that were encountered in the early stages of the orb matching algorithm.
+The first version of the algorithm was written based on the information gather from the image and feature matching video in Module 6 Feature Points [1]. 
+The initial debugging consistent of changing the keypoint data type in order to carry out mathematical operations. 
+The first visualization of the feature point matching algorithm in the figure below gave an idea of apparent semantic issues. 
+Utilizing a high threshold, many of the orbs from the first image were mapped to similar location(s). 
+The root causes were that the second nearest matches were not updated correctly, and the keypoints were used as the descriptors in the distance calculations.
 
 ![Phase1_orbmatch.png](documentation/images/example_match_100_20220326133138.png)
 
 __ADD MORE IMAGES/ PART1 DISCUSSION POINTS__
 
 
-The runtime of part1.py using the orb matching algorithm took around 3 hours to run with multiprocessing enabled. While looking through the Q&A board, the class was given permission to use the cv2.BFMatcher().knnMatch() function from the openCV library. This decreased the computational runtime to around 3 minutes.
+The runtime of part1.py using the orb matching algorithm took around 3 hours to run with multiprocessing enabled. 
+While looking through the Q&A board, the class was given permission to use the cv2.BFMatcher() function from the openCV library [2]. 
+This decreased the computational runtime to around 3 minutes.
 
 (Why did we use agglomerative clustering instead of other algorithms? Maybe explain with possible reference?)
 
@@ -84,10 +99,10 @@ Table of Image transformations:
 
 | Transformation | Original | Transformed | Reconstructed |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |
-| Translation | <img src="part2-images/Simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Translation.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Translation_Inverse.jpg" alt="image_name" width="200"> |
-| Euclidean | <img src="part2-images/Simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Euclidean.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Euclidean_Inverse.jpg" alt="image_name" width="200"> |
-| Affine | <img src="part2-images/Simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Affine.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Affine_Inverse.jpg" alt="image_name" width="200"> |
-| Projection | <img src="part2-images/Simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Project.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Project_Inverse.jpg" alt="image_name" width="200"> |
+| Translation | <img src="part2-images/simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Translation.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Translation_Inverse.jpg" alt="image_name" width="200"> |
+| Euclidean | <img src="part2-images/simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Euclidean.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Euclidean_Inverse.jpg" alt="image_name" width="200"> |
+| Affine | <img src="part2-images/simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Affine.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Affine_Inverse.jpg" alt="image_name" width="200"> |
+| Projection | <img src="part2-images/simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Project.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Project_Inverse.jpg" alt="image_name" width="200"> |
 
 
 We did have to spend additional time working through the linear algebra in expanding the matrix multiplication given the diagrams referenced in part2.py methods, so that we could appropriately configure the equation matrix and solution matrix to be utilized by the numpy.linalg.solve() function. A creative solution was derived for projective transformation in which additional variables are solved for, but not used when constructing the transformation matrix.
@@ -96,16 +111,32 @@ Additional work we could have done to this code would have been to create a dyna
 
 ### part3.py
 
+Difficulties:
+- Implementing RANSAC
+
 ## Conclusions
 
 ## Acknowledges
 ### Bryant Cornwell 
 Co-wrote and tested part1.py with Seth. Contributed to discussions on part2.py. 
-For the report, Introduction, Discussion, Methods -> Part1 and general layout of report.
+For the report, Introduction, Abstract, Discussion (co-wrote with Seth), Methods -> Part1 and general layout of report.
 ### Seth Mize
 ### Lucas Franz
 
 ## References
-- Module 6.7 video: https://iu.instructure.com/courses/2032639/pages/6-dot-7-image-and-feature-matching?module_item_id=25895156
-- Theory on opencv Matcher: https://docs.opencv.org/3.4/dc/dc3/tutorial_py_matcher.html
-- 2D Projective Geometry reference: https://fzheng.me/2016/01/14/proj-transformation/
+[1] Module 6.7 video: https://iu.instructure.com/courses/2032639/pages/6-dot-7-image-and-feature-matching?module_item_id=25895156
+
+[2] Theory on opencv Matcher: https://docs.opencv.org/3.4/dc/dc3/tutorial_py_matcher.html
+
+[3] Module 7 slides: https://iu.instructure.com/courses/2032639/files/133487313/download?wrap=1
+
+[4] 2D Projective Geometry reference: https://fzheng.me/2016/01/14/proj-transformation/
+
+#To complete:
+- (optional) Seth review Part1 Methods to add any recent changes made.
+- Part 1 Discussion (documentation) Sub-Section
+- Part 3 Methods and Discussion Sub-Sections
+- Results Section (Add clusters & accuracy for part1, and image results for part 2 and 3)
+- Conclusion Section
+- Finalize Acknowledgements Section
+- Add references to documentation to proper sections of the report
