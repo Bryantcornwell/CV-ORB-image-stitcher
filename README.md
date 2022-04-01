@@ -108,8 +108,9 @@ The root causes were that the second nearest matches were not updated correctly,
 
 ![Phase1_orbmatch.png](documentation/images/example_match_100_20220326133138.png)
 
-__ADD MORE IMAGES/ PART1 DISCUSSION POINTS__
+Using the final version of the ORB matching algorithm, we received the following result comparing bigben_2.jpg with bigben_10.jpg.
 
+![Phase1_orbmatch.png](documentation/images/bigben_2.jpg_bigben_10.jpg.png)
 
 The runtime of part1.py using the orb matching algorithm took around 3 hours to run with multiprocessing enabled. 
 While looking through the Q&A board, the class was given permission to use the cv2.BFMatcher() function from the openCV library [2]. 
@@ -169,7 +170,6 @@ Wrote part2.py inverse warping and bilinear interpolation code. Created "Simple"
 
 #To complete:
 - (optional) Seth review Part1 Methods to add any recent changes made.
-- Part 1 Discussion (documentation) Sub-Section
 - Part 3 Methods and Discussion Sub-Sections
 - Results Section (Add clusters for part1, and image results for part 3)
 - Conclusion Section
