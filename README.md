@@ -132,6 +132,8 @@ For the report, Introduction, Abstract, Discussion (co-wrote with Seth), Methods
 
 [4] 2D Projective Geometry reference: https://fzheng.me/2016/01/14/proj-transformation/
 
+[5] RANSAC reference: https://en.wikipedia.org/wiki/Random_sample_consensus
+
 #To complete:
 - (optional) Seth review Part1 Methods to add any recent changes made.
 - Part 1 Discussion (documentation) Sub-Section
