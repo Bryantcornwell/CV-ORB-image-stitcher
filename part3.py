@@ -24,7 +24,7 @@ def ransac(point_matches, sample_size, iterations, threshold, min_match_sample_s
         try:
             transform = get_projection_matrix(sample)
         except np.linalg.LinAlgError as err:
-            i = i - 1
+            continue
         sample_test = np.array([sample_test[j] for j in range(sample_test.shape[0]) if test_transition_matrix(transform, [sample_test[j]]) < threshold])
         if len(sample_test) > min_match_sample_size or best_transform is None:
             if best_transform is None:
@@ -57,7 +57,7 @@ def main(image_1, image_2, output):
     point_matches = np.array(orb_sift_match(image_1, image_2))
     point_matches = point_matches[:,-2:]
     point_matches = np.array(list(map(list, point_matches)))
-    transform_matrix, shared_coordinates = ransac(point_matches, 4, len(point_matches) ** 2, 1, int(0.1*len(point_matches)))
+    transform_matrix, shared_coordinates = ransac(point_matches, 4, len(point_matches) ** 3, 0.75, int(0.1*len(point_matches)))
     padded_image = pad_image(image_b, 50, 50, 50, 50)
     cv2.imwrite('padded_image.png', padded_image)
     transformed = apply_transformation(padded_image, transform_matrix)

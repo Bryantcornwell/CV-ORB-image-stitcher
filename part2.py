@@ -23,7 +23,7 @@ def test_transition_matrix(transition_matrix, pairs):
         b = np.rint(b)
         result += np.linalg.norm(Ax - b)
 
-    return result
+    return result / len(pairs)
 
 def apply_transformation(img, transform_array):
 
