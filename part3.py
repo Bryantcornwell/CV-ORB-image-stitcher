@@ -47,19 +47,21 @@ def ransac(point_matches, sample_size, iterations, threshold, min_match_sample_s
 
     print('Best sample error:', test_transition_matrix(best_transform, best_sample))
     best_sample_a = best_sample[:,0,:]
+    centroid_a = centroid(best_sample_a)
     best_sample_b = best_sample[:,1,:]
     centroid_b = centroid(best_sample_b)
 
-    best_sample_b = np.array(list(map(convert_vector, best_sample_b)))
-    best_sample_b = np.matmul(best_transform, best_sample_b.transpose()).transpose()
-    best_sample_b[:,0] = best_sample_b[:,0] / best_sample_b[:,2]
-    best_sample_b[:,1] = best_sample_b[:,1] / best_sample_b[:,2]
-    best_sample_b = best_sample_b[:,:2]
+    return best_transform, best_sample, centroid_a, centroid_b
 
+def map_single_point(matrix, point):
 
-    centroid_b_transform = centroid(best_sample_b)
-    centroid_a = centroid(best_sample_a)
-    return best_transform, best_sample, centroid_a, centroid_b, centroid_b_transform
+    point = convert_vector(point)
+    point = np.matmul(np.linalg.inv(matrix), point)
+    point = point / point[2]
+    point = point[:2]
+
+    return point
+
 
 def main(image_1, image_2, output):
 
@@ -75,12 +77,18 @@ def main(image_1, image_2, output):
     point_matches = np.array(orb_sift_match(image_1, image_2))
     point_matches = point_matches[:,-2:]
     point_matches = np.array(list(map(list, point_matches)))
-    transform_matrix, shared_coordinates, centroid_a, centroid_b, centroid_b_transform = ransac(point_matches, 4, len(point_matches) ** 3, 0.75, int(0.1*len(point_matches)))
-    padded_image = pad_image(image_b, 50, 50, 50, 50)
+    transform_matrix, shared_coordinates, centroid_a, centroid_b = ransac(point_matches, 4, len(point_matches) ** 3, 0.75, int(0.1*len(point_matches)))
+    centroid_b_t = map_single_point(transform_matrix, centroid_b)
+    padded_image = image_b
     cv2.imwrite('padded_image.png', padded_image)
-    transformed = cv2.circle(apply_transformation(image_b, transform_matrix), np.rint(centroid_b_transform).astype(int), 5, (0,255,0), -1)
-    cv2.imwrite('part2-images/image_a_centroid.jpg', cv2.circle(image_a, np.rint(centroid_a).astype(int), 5, (0,255,0), -1))
-    cv2.imwrite('part2-images/image_b_centroid.jpg', cv2.circle(image_b, np.rint(centroid_b).astype(int), 5, (0,255,0), -1))
+    transformed = apply_transformation(image_b, transform_matrix)
+    transformed_centroid = deepcopy(transformed)
+    transformed_centroid = cv2.circle(transformed_centroid, np.rint(centroid_b_t).astype(int), 5, (0,255,0), -1)
+    image_a = cv2.circle(image_a, np.rint(centroid_a).astype(int), 5, (0,255,0), -1)
+    image_b = cv2.circle(image_b, np.rint(centroid_b).astype(int), 5, (0,255,0), -1)
+    cv2.imwrite('part2-images/image_a_centroid.jpg', image_a)
+    cv2.imwrite('part2-images/image_b_centroid.jpg', image_b)
+    cv2.imwrite('part2-images/image_b_t_centroid.jpg', transformed_centroid)
     cv2.imwrite(str(Path(output)), transformed)
     
 
