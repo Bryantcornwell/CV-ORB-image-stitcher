@@ -76,6 +76,10 @@ Overall, part1.py could be further improved by hyperparameter tuning the cluster
 
 ### part2.py
 
+To start the problem we were given an image and corresponding transformation matrix and what our result should look like. This was extremely helpful in initially configuring the inverse warping and bilinear interpolation portions of the code. Once that was accomplished we were able to focus on writing the code for solving for the transformation matrix given a set of coordinate pairs.
+
+In order to construct this code we needed to design a simple image and apply different types of transformations to it to be able to test the different circustances our code may be tested with. Our simple image was a square consisting of a 1 pixel border on a black background. We then apply all four types of transformations to it. Once we had produced the image, we could use the transformation matrix to generate sets of coordinate pairs. Depending on the transformation applied, we then began creating transformation solve functions and limited their input to only the minimum number of coordinate pairs needed to solve for that type of transformation. We were then able to test the transformation matrix by applying the inversing warping to see if we could recreate the original square.
+
 Table of Image transformations:
 
 |                                     Translation                                       |                                             Scaling                                                   |
@@ -83,13 +87,10 @@ Table of Image transformations:
 | <img src="" alt="image_name" width="400"/>                                            | <img src="" alt="image_name" width="400"/>                                                            |
 |                                     __Skewing__                                           |                                              __Projection__                                               |
 | <img src="" alt="image_name" width="400"/>                                            | <img src="" alt="image_name" width="400"/>                                                            |
-Ideas:
-- (Used Lincoln image to establish apply transform, warp, interpol)
-- (Created sample image from square, applied simple transforms, solved... show images)
-- (Paying attention to image bounds when placing points)
 
-Difficulties:
-- Solving the system of equations of the projective transform matrix
+We did have to spend additional time working through the linear algebra in expanding the matrix multiplication given the diagrams referenced in part2.py methods, so that we could appropriately configure the equation matrix and solution matrix to be utilized by the numpy.linalg.solve() function. A creative solution was derived for projective transformation in which additional variables are solved for, but not used when constructing the transformation matrix.
+
+Additional work we could have done to this code would have been to create a dynamic function to solve for the transformation matrix instead of four separate functions. We could also look into the running time of applying the transformation as it is the longest running time of our code. Future work on the overall problem would involve looking into the skewing we are seeing after applying the inverse warping using a projective transformation matrix. 
 
 ### part3.py
 
