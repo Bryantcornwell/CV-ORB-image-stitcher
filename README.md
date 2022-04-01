@@ -22,7 +22,9 @@ Next we go through each orb and determine the nearest and second nearest descrip
 The final matching algorithm we used to perform this matching is a brute force matcher from opencv (cv2.BFMatcher()).
 To check for a good match, the ratio of closest and next_closest hamming distances compared to a threshold of 0.75 for each match. If the ratio is lower than the threshold, it is considered a good match and the corresponding points are passed to a list.
 
-For the clustering algorithm,
+The assignment hinted the use of agglomerative clustering since we had pairwise distances between objects and not a feature for each image.
+Given a value k and the inputted images, we fit the orb pair distances utilizing sklearn's agglomerative clustering algorithm to generate clusters. 
+Each cluster is 
  
 
 
