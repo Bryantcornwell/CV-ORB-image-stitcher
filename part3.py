@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 from copy import deepcopy
+import warnings
 
 import numpy as np
 import cv2
@@ -74,10 +75,10 @@ def main(image_1, image_2, output):
     image_a = cv2.imread(str(Path(image_1)))
     image_b = cv2.imread(str(Path(image_2)))
 
-    point_matches = np.array(orb_sift_match(image_1, image_2))
+    point_matches = np.array(orb_sift_match(image_1, image_2, threshold=0.5, nfeatures=1000))
     point_matches = point_matches[:,-2:]
     point_matches = np.array(list(map(list, point_matches)))
-    transform_matrix, shared_coordinates, centroid_a, centroid_b = ransac(point_matches, 4, len(point_matches) ** 3, 0.75, int(0.1*len(point_matches)))
+    transform_matrix, shared_coordinates, centroid_a, centroid_b = ransac(point_matches, 4, 30000, 0.75, int(0.1*len(point_matches)))
     centroid_b_t = map_single_point(transform_matrix, centroid_b)
     padded_image = image_b
     cv2.imwrite('padded_image.png', padded_image)
@@ -86,13 +87,14 @@ def main(image_1, image_2, output):
     transformed_centroid = cv2.circle(transformed_centroid, np.rint(centroid_b_t).astype(int), 5, (0,255,0), -1)
     image_a = cv2.circle(image_a, np.rint(centroid_a).astype(int), 5, (0,255,0), -1)
     image_b = cv2.circle(image_b, np.rint(centroid_b).astype(int), 5, (0,255,0), -1)
-    cv2.imwrite('part2-images/image_a_centroid.jpg', image_a)
-    cv2.imwrite('part2-images/image_b_centroid.jpg', image_b)
-    cv2.imwrite('part2-images/image_b_t_centroid.jpg', transformed_centroid)
+    cv2.imwrite('outputs/part3/image_a_centroid.jpg', image_a)
+    cv2.imwrite('outputs/part3/image_b_centroid.jpg', image_b)
+    cv2.imwrite('outputs/part3/image_b_t_centroid.jpg', transformed_centroid)
     cv2.imwrite(str(Path(output)), transformed)
     
 
 if __name__ == '__main__':
+    warnings.filterwarnings("ignore")
 
     try:
         image_1, image_2, output = sys.argv[1:]
