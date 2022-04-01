@@ -114,6 +114,16 @@ For the report, Introduction, Abstract, Discussion (co-wrote with Seth), Methods
 ### Lucas Franz
 
 ## References
-- Module 6.7 video: https://iu.instructure.com/courses/2032639/pages/6-dot-7-image-and-feature-matching?module_item_id=25895156
-- Theory on opencv Matcher: https://docs.opencv.org/3.4/dc/dc3/tutorial_py_matcher.html
-- 2D Projective Geometry reference: https://fzheng.me/2016/01/14/proj-transformation/
+[1] Module 6.7 video: https://iu.instructure.com/courses/2032639/pages/6-dot-7-image-and-feature-matching?module_item_id=25895156
+
+[2] Theory on opencv Matcher: https://docs.opencv.org/3.4/dc/dc3/tutorial_py_matcher.html
+
+[3] 2D Projective Geometry reference: https://fzheng.me/2016/01/14/proj-transformation/
+
+#To complete:
+- Part 1 Discussion (documentation) Sub-Section
+- Part 3 Methods and Discussion Sub-Sections
+- Results Section (Add clusters & accuracy for part1, and image results for part 2 and 3)
+- Conclusion Section
+- Finalize Acknowledgements Section
+- Add references to documentation to proper sections of the report
