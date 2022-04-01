@@ -82,11 +82,12 @@ In order to construct this code we needed to design a simple image and apply dif
 
 Table of Image transformations:
 
-|                                     Translation                                       |                                             Scaling                                                   |
-| :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |
-| <img src="" alt="image_name" width="400"/>                                            | <img src="" alt="image_name" width="400"/>                                                            |
-|                                     __Skewing__                                           |                                              __Projection__                                               |
-| <img src="" alt="image_name" width="400"/>                                            | <img src="" alt="image_name" width="400"/>                                                            |
+| Transformation | Original | Transformed | Reconstructed |
+| :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |
+| Translation | <img src="part2-images/Simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Translation.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Translation_Inverse.jpg" alt="image_name" width="200"> |
+| Euclidean | <img src="part2-images/Simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Euclidean.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Euclidean_Inverse.jpg" alt="image_name" width="200"> |
+| Affine | <img src="part2-images/Simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Affine.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Affine_Inverse.jpg" alt="image_name" width="200"> |
+| Projection | <img src="part2-images/Simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Project.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Project_Inverse.jpg" alt="image_name" width="200"> |
 
 We did have to spend additional time working through the linear algebra in expanding the matrix multiplication given the diagrams referenced in part2.py methods, so that we could appropriately configure the equation matrix and solution matrix to be utilized by the numpy.linalg.solve() function. A creative solution was derived for projective transformation in which additional variables are solved for, but not used when constructing the transformation matrix.
 
