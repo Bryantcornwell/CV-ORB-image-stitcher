@@ -121,6 +121,7 @@ For the report, Introduction, Abstract, Discussion (co-wrote with Seth), Methods
 [3] 2D Projective Geometry reference: https://fzheng.me/2016/01/14/proj-transformation/
 
 #To complete:
+- (optional) Seth review Part1 Methods to add any recent changes made.
 - Part 1 Discussion (documentation) Sub-Section
 - Part 3 Methods and Discussion Sub-Sections
 - Results Section (Add clusters & accuracy for part1, and image results for part 2 and 3)
