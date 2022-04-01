@@ -37,11 +37,13 @@ def distance(point1, point2, kind='euclidean'):
 def pad_image(image, top, bottom, left, right, color=(0,0,0)):
     # Deprecated, no longer used
 
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     width_padded = image.shape[1] + left + right
     height_padded = image.shape[0] + top + bottom
     padded_image = Image.new('RGB', (width_padded, height_padded), color)
-    Image.fromarray(image).save('test.png')
-    return np.asarray(padded_image.paste(Image.fromarray(image), (left, top)))
+    padded_image.paste(Image.fromarray(image), (left, top))
+    padded_image.save('pad_image_temp.png')
+    return cv2.imread('pad_image_temp.png')
 
 
 def old_match_points_code(descs1, descs2):
@@ -257,7 +259,9 @@ def accuracy_pairwise_cluster(clusters):
         for file_b in files:
             if file_a != file_b:
                 same_object = is_same_object(file_a, file_b)
+                # tp += is same object AND has same label
                 tp += same_object * (files[file_a] == files[file_b])
+                # tp += not same object AND not has same label
                 tn += (1-same_object) * (files[file_a] != files[file_b])
 
     return (tp+tn) / (n * (n-1))

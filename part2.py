@@ -5,8 +5,27 @@ import cv2
 import numpy as np
 
 
+def convert_vector(x):
 
-def Apply_Transformation(img, transform_array):
+    x = list(x) + [1]
+    return np.array(x)
+
+def test_transition_matrix(transition_matrix, pairs):
+    
+    result = 0
+    for pair in pairs: 
+        x, b = map(convert_vector, pair)
+
+        Ax = np.matmul(transition_matrix, x)
+        # Divide by z_ to get back to (x_, y_, 1) space.
+        Ax = Ax / Ax[2]
+        Ax = np.rint(Ax)
+        b = np.rint(b)
+        result += np.linalg.norm(Ax - b)
+
+    return result
+
+def apply_transformation(img, transform_array):
 
     # Get transformation to apply
     # Take the inverse to perform inverse warping
@@ -30,12 +49,12 @@ def Apply_Transformation(img, transform_array):
                 old_y > 0 and \
                 old_x > 0:
 
-                    new_img[r, c] = Apply_Interpolation(old_x, old_y, img)
+                    new_img[r, c] = apply_interpolation(old_x, old_y, img)
 
     return new_img
 
 
-def Apply_Interpolation(x, y, img):
+def apply_interpolation(x, y, img):
 
     x_ceiling = np.ceil(x)
     y_ceiling = np.ceil(y)
@@ -90,7 +109,7 @@ def Apply_Interpolation(x, y, img):
     else: return img[int(y), int(x)]
 
 
-def Build_Matching_Coordinates(n):
+def build_matching_coordinates(n):
     matching_points = []
 
     i = 5
@@ -109,7 +128,7 @@ def Build_Matching_Coordinates(n):
     return matching_points
 
 
-def Get_Translation_Matrix(point_pairs):
+def get_translation_matrix(point_pairs):
 
     a = point_pairs[0][1][0] - point_pairs[0][0][0]
     b = point_pairs[0][1][1] - point_pairs[0][0][1]
@@ -121,7 +140,7 @@ def Get_Translation_Matrix(point_pairs):
     return transition_matrix
 
 
-def Get_Euclidean_Matrix(point_pairs):
+def get_euclidean_matrix(point_pairs):
 
     solution_matrix = []
     solution_vector = []
@@ -144,7 +163,7 @@ def Get_Euclidean_Matrix(point_pairs):
     return transition_matrix
 
 
-def Get_Affine_Matrix(point_pairs):
+def get_affine_matrix(point_pairs):
 
     solution_matrix = []
     solution_vector = []
@@ -167,7 +186,7 @@ def Get_Affine_Matrix(point_pairs):
     return transition_matrix
 
 
-def Get_Projection_Matrix(point_pairs):
+def get_projection_matrix(point_pairs):
 
     solution_matrix = []
     solution_vector = []
@@ -196,33 +215,20 @@ def Get_Projection_Matrix(point_pairs):
     return transition_matrix
 
 
-def Get_Transition_Matrix(n, point_pairs):
+def get_transition_matrix(n, point_pairs):
 
     if n == 1 and len(point_pairs) >= 1:
-        return Get_Translation_Matrix(point_pairs)
+        return get_translation_matrix(point_pairs)
     elif n == 2 and len(point_pairs) >= 2:
-        return Get_Euclidean_Matrix(point_pairs)
+        return get_euclidean_matrix(point_pairs)
     elif n == 3 and len(point_pairs) >= 3:
-        return Get_Affine_Matrix(point_pairs)
+        return get_affine_matrix(point_pairs)
     elif n == 4 and len(point_pairs) >= 4:
-        return Get_Projection_Matrix(point_pairs)
+        return get_projection_matrix(point_pairs)
     else:
         raise Exception(f'Passed N and Pairs Received Do Not Match.\nPassed N {n}, Number of Pairs: {len(point_pairs)}')
 
-
-
-
-
-
-if __name__ == '__main__':
-
-    # Store arguments in variables
-    passed_n = int(sys.argv[1])
-    first_img = sys.argv[2]
-    second_img = sys.argv[3]
-    output_img = sys.argv[4]
-
-    passed_coordinates = sys.argv[5:]
+def main(passed_n, first_img, second_img, output_img, passed_coordinates, output_method='save'):
 
     if len(passed_coordinates) > 0:
 
@@ -235,14 +241,32 @@ if __name__ == '__main__':
         matching_coordinates = matching_coordinates.astype('int')
 
         # Get transformation matrix
-        transformation_matrix = Get_Transition_Matrix(passed_n, matching_coordinates)
+        transformation_matrix = get_transition_matrix(passed_n, matching_coordinates)
 
         # Get first image as array
         first_img = cv2.imread(first_img)
 
+        
         # Apply transformation
-        output = Apply_Transformation(first_img, transformation_matrix)
+        output = apply_transformation(first_img, transformation_matrix)
 
+        if output_method == 'save' and output_img is not None:
         # Save output
-        cv2.imwrite(output_img, output)
+            cv2.imwrite(output_img, output)
+        elif output_method == 'return':
+            return output
+        else:
+            raise Exception(f'output_method must be "save" or "return". If output_method is "save", output_img must not be None.\noutput_method: {output_method}\noutput_img: {output_img}')
 
+
+if __name__ == '__main__':
+
+    # Store arguments in variables
+    passed_n = int(sys.argv[1])
+    first_img = sys.argv[2]
+    second_img = sys.argv[3]
+    output_img = sys.argv[4]
+
+    passed_coordinates = sys.argv[5:]
+
+    main(passed_n, first_img, second_img, output_img, passed_coordinates)
