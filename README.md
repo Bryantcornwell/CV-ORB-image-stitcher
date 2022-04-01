@@ -11,7 +11,7 @@ Finally, we combined the feature point matching along with RANSAC and image tran
 
 ## Methods
 ### part1.py
-Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the '< >' desired arguments below:
+Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the desired arguments below:
 
     ./a2 part1 <k> images/*.png outputfile_txt
 
@@ -23,7 +23,7 @@ The final matching algorithm we used to perform this matching is a brute force m
 To check for a good match, the ratio of closest and next_closest hamming distances compared to a threshold of 0.75 for each match. If the ratio is lower than the threshold, it is considered a good match and the corresponding points are passed to a list.
 
 The assignment hinted the use of agglomerative clustering since we had pairwise distances between objects and not a feature for each image.
-Given a value k and the inputted images, we fit the orb pair distances utilizing sklearn's agglomerative clustering algorithm to generate clusters. 
+Given the input number of clusters, k, and the input images, we fit the orb pair distances utilizing sklearn's agglomerative clustering algorithm to generate clusters. 
 Each cluster is added to a dictionary and used to determine the pairwise clustering accuracy.
 The accuracy is computed by adding the number of true positive and true negatives together and dividing by the total number of possible pairs of images. 
 A pair is a true positive is when a pair has the same image name and is in the same cluster.
@@ -32,7 +32,7 @@ This part concludes by printing the pairwise clustering accuracy and writing the
 
 
 ### part2.py
-Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the '< >' desired arguments below:
+Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the desired arguments below:
 
     ./a2 part2 n img_1.png img_2.png img_output.png img1_x1,img1_y1 img2_x1,img2_x1 ... img1_xn,img1_yn img2_xn,img2_yn
 
@@ -55,12 +55,15 @@ Four separate functions are used to solve for the 4 different transformation. Th
 The solved transformation matrix is the inverse transformation which leads to the next step of the code of applying inverse warping to the image that we are trying to transform into the perspective of the target image. In inverse warping we loop through the pixels of the transformed image, apply the inverse transform matrix, and lookup the corresponding coordinate from the original image. Applying forward warping has the potential to give a fractional destination pixel, resulting in holes in the image. Using inversing warping we still get a fractional original coordinate, but we can then apply bilinear interpolation to get a weighted contribution from the surrounding original pixels to create a new proportional pixel.
 
 ### part3.py
-Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the '< >' desired arguments below:
+Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the desired arguments below:
 
     ./a2 part3 image_1.jpg image_2.jpg output.jpg
 
 
 ## Results
+
+The pairwise clustering accuracy from the part1 feature matching algorithm give 82%.
+
 
 ## Discussion
 ### part1.py
@@ -104,7 +107,7 @@ Additional work we could have done to this code would have been to create a dyna
 ## Acknowledges
 ### Bryant Cornwell 
 Co-wrote and tested part1.py with Seth. Contributed to discussions on part2.py. 
-For the report, Introduction, Discussion, Methods -> Part1 and general layout of report.
+For the report, Introduction, Discussion (co-wrote with Seth), Methods -> Part1 and general layout of report.
 ### Seth Mize
 ### Lucas Franz
 
