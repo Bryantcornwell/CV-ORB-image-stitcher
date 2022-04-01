@@ -6,7 +6,12 @@ import numpy as np
 import cv2
 
 from part1 import orb_sift_match, pad_image
-from part2 import get_projection_matrix, test_transition_matrix, apply_transformation
+from part2 import get_projection_matrix, test_transition_matrix, apply_transformation, convert_vector
+
+def centroid(points):
+
+    return np.sum(points, axis=0) / points.shape[0]
+
 
 def ransac(point_matches, sample_size, iterations, threshold, min_match_sample_size):
     # RANSAC some $#17
@@ -41,7 +46,20 @@ def ransac(point_matches, sample_size, iterations, threshold, min_match_sample_s
         i += 1
 
     print('Best sample error:', test_transition_matrix(best_transform, best_sample))
-    return best_transform, best_sample
+    best_sample_a = best_sample[:,0,:]
+    best_sample_b = best_sample[:,1,:]
+    centroid_b = centroid(best_sample_b)
+
+    best_sample_b = np.array(list(map(convert_vector, best_sample_b)))
+    best_sample_b = np.matmul(best_transform, best_sample_b.transpose()).transpose()
+    best_sample_b[:,0] = best_sample_b[:,0] / best_sample_b[:,2]
+    best_sample_b[:,1] = best_sample_b[:,1] / best_sample_b[:,2]
+    best_sample_b = best_sample_b[:,:2]
+
+
+    centroid_b_transform = centroid(best_sample_b)
+    centroid_a = centroid(best_sample_a)
+    return best_transform, best_sample, centroid_a, centroid_b, centroid_b_transform
 
 def main(image_1, image_2, output):
 
@@ -57,10 +75,12 @@ def main(image_1, image_2, output):
     point_matches = np.array(orb_sift_match(image_1, image_2))
     point_matches = point_matches[:,-2:]
     point_matches = np.array(list(map(list, point_matches)))
-    transform_matrix, shared_coordinates = ransac(point_matches, 4, len(point_matches) ** 3, 0.75, int(0.1*len(point_matches)))
+    transform_matrix, shared_coordinates, centroid_a, centroid_b, centroid_b_transform = ransac(point_matches, 4, len(point_matches) ** 3, 0.75, int(0.1*len(point_matches)))
     padded_image = pad_image(image_b, 50, 50, 50, 50)
     cv2.imwrite('padded_image.png', padded_image)
-    transformed = apply_transformation(padded_image, transform_matrix)
+    transformed = cv2.circle(apply_transformation(image_b, transform_matrix), np.rint(centroid_b_transform).astype(int), 5, (0,255,0), -1)
+    cv2.imwrite('part2-images/image_a_centroid.jpg', cv2.circle(image_a, np.rint(centroid_a).astype(int), 5, (0,255,0), -1))
+    cv2.imwrite('part2-images/image_b_centroid.jpg', cv2.circle(image_b, np.rint(centroid_b).astype(int), 5, (0,255,0), -1))
     cv2.imwrite(str(Path(output)), transformed)
     
 
