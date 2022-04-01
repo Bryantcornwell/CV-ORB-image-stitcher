@@ -47,7 +47,7 @@ This program relies upon the passed argument for the type of transformation that
 
 Given the passed value of 'N', an equal number of matching coordinate pairs must be pass ((beginning x, beginning y), (target x, target y)). The program first ensures coordinate matches are included and then validates that there is an appropriate number of pairs to solve for the desired transformation.
 
-Four separate functions are used to solve for the 4 different transformation. The following diagrams from Module 7 Image Transformation powerpoint slides [3] and online theory resource [4] were used to create the corresponding linear system of equations to solve for the underlying variables representing the degrees of freedom for each transformation:
+Four separate functions are used to solve for the 4 different transformation. The following diagrams from Module 7 Image Transformation powerpoint slides [3] and 2D Projective Geometry theory resource [4] were used to create the corresponding linear system of equations to solve for the underlying variables representing the degrees of freedom for each transformation:
 
 - Translation Diagram
 - Euclidean Diagram
