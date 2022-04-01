@@ -94,7 +94,7 @@ The second test case involved testing our solved transformation matrix for proje
 
 | Target | Input | Projection |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
-| <img src="part2-images/book1.jpg" alt="image_name" width="200"/> | <img src="part2-images/Book2.jpg" alt="image_name" width="200"> | <img src="part2-images/Book3.jpg" alt="image_name" width="200"> |
+| <img src="part2-images/book1.jpg" alt="image_name" width="200"/> | <img src="part2-images/book2.jpg" alt="image_name" width="200"> | <img src="part2-images/book3.jpg" alt="image_name" width="200"> |
 
 
 ## Discussion
