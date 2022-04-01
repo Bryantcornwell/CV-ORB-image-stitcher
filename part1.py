@@ -143,7 +143,7 @@ def orb_sift_match(image_a, image_b, threshold=0.75):
     #img2 = cv2.copyMakeBorder(img2, top=0, bottom=y_max-img2.shape[0], left=0, right=x_max-img2.shape[1], borderType=cv2.BORDER_CONSTANT)
 
     # you can increase nfeatures to adjust how many features to detect
-    orb = cv2.ORB_create(nfeatures=1000)
+    orb = cv2.ORB_create(nfeatures=500)
 
     (keypoints1, descriptors1) = orb.detectAndCompute(img1, None)
     (keypoints2, descriptors2) = orb.detectAndCompute(img2, None)
@@ -164,7 +164,8 @@ def orb_sift_match(image_a, image_b, threshold=0.75):
 
         ratio = closest.distance / next_closest.distance
         if ratio < threshold:
-            point_matches.append((closest.queryIdx, closest.trainIdx, ratio, closest.distance))
+            point_matches.append((closest.queryIdx, closest.trainIdx, ratio, closest.distance,
+                                 keypoints1[closest.queryIdx].pt, keypoints2[closest.trainIdx].pt))
 
     return point_matches
 
