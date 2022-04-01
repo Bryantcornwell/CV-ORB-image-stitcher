@@ -3,7 +3,7 @@ Group Members: Seth Mize, Lucas Franz, Bryant Cornwell
 
 ## Abstract
 
-Due to smart phone and the Digital Age, image transformation operations have become more accessible. Image panoramics, image matching, etc. are a few applications of these operations. This report aims to match images using ORB feature point detection, perform image transformation operations to change image prospectives, and automatically stitch two similar images together utilizing RANSAC. The pairwise clustering accuracy for matching images yielded 82% utilizing OpenCV's brute force matching algorithm.
+Due to the smartphone and Digital Age, image transformation operations have become more accessible. Image panoramics, image matching, etc. are a few applications of these operations. This report aims to match images using ORB feature point detection, perform image transformation operations to change image prospectives, and automatically stitch two similar images together utilizing RANSAC. The pairwise clustering accuracy for matching images yielded 82% utilizing OpenCV's brute force matching algorithm.
 
 ## Introduction
 
@@ -47,7 +47,7 @@ This program relies upon the passed argument for the type of transformation that
 
 Given the passed value of 'N', an equal number of matching coordinate pairs must be pass ((beginning x, beginning y), (target x, target y)). The program first ensures coordinate matches are included and then validates that there is an appropriate number of pairs to solve for the desired transformation.
 
-Four separate functions are used to solve for the 4 different transformation. The following diagrams from (credit professors slides) and (online resource from bryant) were used to create the corresponding linear system of equations to solve for the underlying variables representing the degrees of freedom for each transformation:
+Four separate functions are used to solve for the 4 different transformation. The following diagrams from Module 7 Image Transformation powerpoint slides [3] and online theory resource [4] were used to create the corresponding linear system of equations to solve for the underlying variables representing the degrees of freedom for each transformation:
 
 - Translation Diagram
 - Euclidean Diagram
@@ -69,14 +69,21 @@ The pairwise clustering accuracy from the part1 feature matching algorithm give 
 
 ## Discussion
 ### part1.py
-There were some difficulties with that were encountered in the early stages of the orb matching algorithm. The first version of the algorithm was written based on the information gather from the image and feature matching video in Module 6 Feature Points. The initial debugging consistent of changing the keypoint data type in order to carry out mathematical operations. The first visualization of the feature point matching algorithm in the figure below gave an idea of apparent semantic issues. Utilizing a high threshold, many of the orbs from the first image were mapped to similar location(s). The root causes were that the second nearest matches were not updated correctly, and the keypoints were used as the descriptors in the distance calculations.
+There were some difficulties with that were encountered in the early stages of the orb matching algorithm.
+The first version of the algorithm was written based on the information gather from the image and feature matching video in Module 6 Feature Points [1]. 
+The initial debugging consistent of changing the keypoint data type in order to carry out mathematical operations. 
+The first visualization of the feature point matching algorithm in the figure below gave an idea of apparent semantic issues. 
+Utilizing a high threshold, many of the orbs from the first image were mapped to similar location(s). 
+The root causes were that the second nearest matches were not updated correctly, and the keypoints were used as the descriptors in the distance calculations.
 
 ![Phase1_orbmatch.png](documentation/images/example_match_100_20220326133138.png)
 
 __ADD MORE IMAGES/ PART1 DISCUSSION POINTS__
 
 
-The runtime of part1.py using the orb matching algorithm took around 3 hours to run with multiprocessing enabled. While looking through the Q&A board, the class was given permission to use the cv2.BFMatcher().knnMatch() function from the openCV library. This decreased the computational runtime to around 3 minutes.
+The runtime of part1.py using the orb matching algorithm took around 3 hours to run with multiprocessing enabled. 
+While looking through the Q&A board, the class was given permission to use the cv2.BFMatcher() function from the openCV library [2]. 
+This decreased the computational runtime to around 3 minutes.
 
 (Why did we use agglomerative clustering instead of other algorithms? Maybe explain with possible reference?)
 
@@ -104,6 +111,9 @@ Additional work we could have done to this code would have been to create a dyna
 
 ### part3.py
 
+Difficulties:
+- Implementing RANSAC
+
 ## Conclusions
 
 ## Acknowledges
@@ -118,7 +128,9 @@ For the report, Introduction, Abstract, Discussion (co-wrote with Seth), Methods
 
 [2] Theory on opencv Matcher: https://docs.opencv.org/3.4/dc/dc3/tutorial_py_matcher.html
 
-[3] 2D Projective Geometry reference: https://fzheng.me/2016/01/14/proj-transformation/
+[3] Module 7 slides: https://iu.instructure.com/courses/2032639/files/133487313/download?wrap=1
+
+[4] 2D Projective Geometry reference: https://fzheng.me/2016/01/14/proj-transformation/
 
 #To complete:
 - (optional) Seth review Part1 Methods to add any recent changes made.
