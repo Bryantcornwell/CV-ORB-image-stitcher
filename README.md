@@ -113,9 +113,9 @@ __ADD MORE IMAGES/ PART1 DISCUSSION POINTS__
 
 The runtime of part1.py using the orb matching algorithm took around 3 hours to run with multiprocessing enabled. 
 While looking through the Q&A board, the class was given permission to use the cv2.BFMatcher() function from the openCV library [2]. 
-This decreased the computational runtime to around 3 minutes.
+This decreased the computational runtime to around 3 minutes. 
+We used sklearn's agglomerative clustering algorithm to generate clusters as a suggestion from the professor. Agglomerative clustering is a type of hierarchical clustering where in our case each pair are placed into ten different groups based on the distances of the pairs [6].
 
-(Why did we use agglomerative clustering instead of other algorithms? Maybe explain with possible reference?)
 
 Overall, part1.py could be further improved by hyperparameter tuning the clustering algorithm and feature matching threshold. Future improvements to the original feature matching algorithm could provide promising results, but could result in a long development due to the current computational runtime.
 
@@ -148,8 +148,8 @@ Difficulties:
 
 ## Acknowledges
 ### Bryant Cornwell 
-Co-wrote and tested part1.py with Seth. Contributed to discussions on part2.py. 
-For the report, Introduction, Abstract, Discussion (co-wrote with Seth), Methods -> Part1 and general layout of report.
+Co-wrote and tested part1.py with Seth. Contributed to discussions on implementing part2.py and part3.py. 
+For the report, wrote the introduction, abstract, part1.py methods, part1.py results, part1.py discussion, and general layout of report.
 ### Seth Mize
 ### Lucas Franz
 Wrote part2.py inverse warping and bilinear interpolation code. Created "Simple" test cases for work solving different transformations. Implemented transformation solving code provided by Seth. In the report, wrote part2.py methods, results, discussion, and contributed to part3.py methods. 
@@ -165,11 +165,13 @@ Wrote part2.py inverse warping and bilinear interpolation code. Created "Simple"
 
 [5] RANSAC reference: https://en.wikipedia.org/wiki/Random_sample_consensus
 
+[6] Hierarchical agglomerative clustering: https://en.wikipedia.org/wiki/Hierarchical_clustering
+
 #To complete:
 - (optional) Seth review Part1 Methods to add any recent changes made.
 - Part 1 Discussion (documentation) Sub-Section
 - Part 3 Methods and Discussion Sub-Sections
-- Results Section (Add clusters & accuracy for part1, and image results for part 2 and 3)
+- Results Section (Add clusters for part1, and image results for part 3)
 - Conclusion Section
 - Finalize Acknowledgements Section
 - Add references to documentation to proper sections of the report
