@@ -262,11 +262,13 @@ def main(passed_n, first_img, second_img, output_img, passed_coordinates, output
 if __name__ == '__main__':
 
     # Store arguments in variables
-    passed_n = int(sys.argv[1])
-    first_img = sys.argv[2]
-    second_img = sys.argv[3]
-    output_img = sys.argv[4]
-
-    passed_coordinates = sys.argv[5:]
+    try:
+        passed_n = int(sys.argv[2])
+        first_img = sys.argv[3]
+        second_img = sys.argv[4]
+        output_img = sys.argv[5]
+        passed_coordinates = sys.argv[6:]
+    except:
+        raise Exception(f'Usage: python3 part2.py <n> <img1> <img2> <outImg> <x11,y11> <x12,y12> ... <x1n,y1n> <x21,y21> <x22,y22> ... <x2n,y2n>')
 
     main(passed_n, first_img, second_img, output_img, passed_coordinates)
