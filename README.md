@@ -89,6 +89,7 @@ Table of Image transformations:
 | Affine | <img src="part2-images/Simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Affine.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Affine_Inverse.jpg" alt="image_name" width="200"> |
 | Projection | <img src="part2-images/Simple.jpg" alt="image_name" width="200"/> | <img src="part2-images/Simple_Project.jpg" alt="image_name" width="200"> | <img src="part2-images/Simple_Project_Inverse.jpg" alt="image_name" width="200"> |
 
+
 We did have to spend additional time working through the linear algebra in expanding the matrix multiplication given the diagrams referenced in part2.py methods, so that we could appropriately configure the equation matrix and solution matrix to be utilized by the numpy.linalg.solve() function. A creative solution was derived for projective transformation in which additional variables are solved for, but not used when constructing the transformation matrix.
 
 Additional work we could have done to this code would have been to create a dynamic function to solve for the transformation matrix instead of four separate functions. We could also look into the running time of applying the transformation as it is the longest running time of our code. Future work on the overall problem would involve looking into the skewing we are seeing after applying the inverse warping using a projective transformation matrix. 
