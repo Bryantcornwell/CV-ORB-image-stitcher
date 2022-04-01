@@ -109,7 +109,7 @@ Additional work we could have done to this code would have been to create a dyna
 ## Acknowledges
 ### Bryant Cornwell 
 Co-wrote and tested part1.py with Seth. Contributed to discussions on part2.py. 
-For the report, Introduction, Discussion (co-wrote with Seth), Methods -> Part1 and general layout of report.
+For the report, Introduction, Abstract, Discussion (co-wrote with Seth), Methods -> Part1 and general layout of report.
 ### Seth Mize
 ### Lucas Franz
 
