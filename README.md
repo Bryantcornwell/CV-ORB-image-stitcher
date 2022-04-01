@@ -24,8 +24,11 @@ To check for a good match, the ratio of closest and next_closest hamming distanc
 
 The assignment hinted the use of agglomerative clustering since we had pairwise distances between objects and not a feature for each image.
 Given a value k and the inputted images, we fit the orb pair distances utilizing sklearn's agglomerative clustering algorithm to generate clusters. 
-Each cluster is 
- 
+Each cluster is added to a dictionary and used to determine the pairwise clustering accuracy.
+The accuracy is computed by adding the number of true positive and true negatives together and dividing by the total number of possible pairs of images. 
+A pair is a true positive is when a pair has the same image name and is in the same cluster.
+A pair is a true negative is when a pair does not have the same image name and is not in the same cluster.
+This part concludes by printing the pairwise clustering accuracy and writing the clusters separated by a newline to an output.txt file.
 
 
 ### part2.py
