@@ -69,9 +69,11 @@ Two images are passed to the program and read into numpy arrays. The orb_sift_ma
 
 Once the feature point matches are gathered we apply random sample consensus (RANSAC) to determine the appropriate transformation matrix. To do this, we take the set of feature point matches and sample a set number of matches from them for a passed number of experiments. For each experiment, the feature points are shuffled to create a randomized sample each time. The sampled points are then used to solve for the projection matrix given the points. The remaining feature point matches that were not used to solve for the projection matrix are then used to test the found projection matrix to see how many of the feature point matches are in agreement with the found matrix. 
 
-The sample with the lowest test error is preserved and passed to the apply_transformation fuction. This function applied the projection appropriately to one of the images to bring both images into the same perspective and prepare them to be merged.
+The sample with the lowest test error is preserved and passed to the apply_transformation fuction. This function applied the projection appropriately to one of the images to bring both images into the same perspective and prepare them to be merged. The sample with the lowest error is also used to isolate a central point imperative for stitching the images together. 
 
-(Find centroid and merge images)
+Using the sample of points, we take the average of those points from image a and image b to get a centroid a and centroid b. For centroid b, from the image that we are projecting to the same perspective of image a, we apply the found transformation matrix to get a transformed centroid b. Once we have transformed centroid b, we then have the correct point to overlay transformed image b on top of image a, then taking the average of the pixels to blend the images together.
+
+Prior to transforming image b, we adjust the image space it will be mapped into to include the maximum image bounds available given the images. This step ensures the projected image will not be overly cropped, giving us the maximum stitched image. 
 
 
 ## Results
