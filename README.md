@@ -142,14 +142,17 @@ Additional work we could have done to this code would have been to create a dyna
 
 ### part3.py
 
-Attempt 1:
+Attempt 1: 
+
+Mapping a centroid to the coordination system in Image A from Image B.
 
 | Image A Centroid | Image B Centroid  | Output |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
-| <img src="documentation/part3/attempt1/image_a_centroid.jpg" alt="image_name" width="200"/> | <img src="documentation/part3/attempt1/image_a_centroid.jpg" alt="image_name" width="200"> | <img src="documentation/part3/attempt1/book3.jpg" alt="image_name" width="200"> |
-
+| <img src="documentation/part3/attempt1/image_a_centroid.jpg" alt="image_name" width="200"/> | <img src="documentation/part3/attempt1/image_b_centroid.jpg" alt="image_name" width="200"> | <img src="documentation/part3/attempt1/book3.jpg" alt="image_name" width="200"> |
 
 Attempt 2:
+
+Correctly mapping an Image B centroid to Image A coordinate system.
 
 | Image A Centroid | Image B Centroid  | Output |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
@@ -157,9 +160,25 @@ Attempt 2:
 
 Attempt 3:
 
+Applying the algorithm from attempt 2 to our images. Notice nearly half of the transformed image is cut off.
+
 | Image A Centroid | Image B Centroid  | Output |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/attempt3/image_a_centroid.jpg" alt="image_name" width="200"/> | <img src="documentation/part3/attempt3/image_b_centroid.jpg" alt="image_name" width="200"> | <img src="documentation/part3/attempt3/image_b_t_centroid.jpg" alt="image_name" width="200"> |
+
+Attempt 4:
+
+
+
+| Image A Centroid | Image B Centroid  | Output |
+| :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
+| <img src="documentation/part3/attempt4/image_a_centroid.jpg" alt="image_name" width="200"/> | <img src="documentation/part3/attempt4/image_b_centroid.jpg" alt="image_name" width="200"> | <img src="documentation/part3/attempt4/image_b_t_centroid.jpg" alt="image_name" width="200"> |
+
+Attempt 5:
+
+| Image A Centroid | Image B Centroid  | Output |
+| :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
+| <img src="documentation/part3/attempt5/image_a_centroid.jpg" alt="image_name" width="200"/> | <img src="documentation/part3/attempt5/image_b_centroid.jpg" alt="image_name" width="200"> | <img src="documentation/part3/attempt5/image_b_t_centroid.jpg" alt="image_name" width="200"> |
 
 
 ## Conclusions
