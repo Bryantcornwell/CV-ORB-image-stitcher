@@ -17,6 +17,8 @@ Run the code from the terminal using the following format on the linux server an
 
     ./a2 part1 <k> images/*.png outputfile_txt
 
+    python3 a2.py part1 <k> images/*.png outputfile_txt
+
 The first task of part1.py was to load two images using OpenCV library and create a border around each image based on the largest image width and height. The border was used for image concatenation when testing both images side by side. 
 An orb object is created to detect 1000 features within each image and extract points & descriptors for each feature. 
 To check for a match, you iterate through all pairing of orbs between image A and image B and for each pairing we calculate the hamming distance. 
@@ -38,6 +40,8 @@ Run the code from the terminal using the following format on the linux server an
 
     ./a2 part2 n img_1.png img_2.png img_output.png img1_x1,img1_y1 img2_x1,img2_x1 ... img1_xn,img1_yn img2_xn,img2_yn
 
+    python3 a2.py part2 n img_1.png img_2.png img_output.png img1_x1,img1_y1 img2_x1,img2_x1 ... img1_xn,img1_yn img2_xn,img2_yn
+
 This program relies upon the passed argument for the type of transformation that will be solved for. There are four types of transformations that can be passed using the values for 'N' of 1, 2, 3, 4.
 
 - 1 = Translation
@@ -56,22 +60,24 @@ Four separate functions are used to solve for the 4 different transformation. Th
 The solved transformation matrix is the inverse transformation which leads to the next step of the code of applying inverse warping to the image that we are trying to transform into the perspective of the target image. In inverse warping we loop through the pixels of the transformed image, apply the inverse transform matrix, and lookup the corresponding coordinate from the original image. Applying forward warping has the potential to give a fractional destination pixel, resulting in holes in the image. Using inversing warping we still get a fractional original coordinate, but we can then apply bilinear interpolation to get a weighted contribution from the surrounding original pixels to create a new proportional pixel.
 
 ### part3.py
-Run the code from the terminal using the following format on the linux server and ensure to type the required parameter for the desired arguments below:
+Run the code from the terminal using one of the following format on the linux server and ensure to type the required parameter for the desired arguments below:
 
     ./a2 part3 image_1.jpg image_2.jpg output.jpg
+
+    python3 a2.py part3 image_1.jpg image_2.jpg output.jpg
 
 This program utilizes functions from part1.py and part2.py, specifically;
 
 - part1.py: orb_sift_match, pad_image
-- part2.py: get_projection_matrix, test_transition_matrix, apply_transformation
+- part2.py: get_projection_matrix, test_transition_matrix, apply_transformation, convert_vector
 
 Two images are passed to the program and read into numpy arrays. The orb_sift_match function is then applied to extract feature point matches between the two images. 
 
-Once the feature point matches are gathered we apply random sample consensus (RANSAC) to determine the appropriate transformation matrix. To do this, we take the set of feature point matches and sample a set number of matches from them for a passed number of experiments. For each experiment, the feature points are shuffled to create a randomized sample each time. The sampled points are then used to solve for the projection matrix given the points. The remaining feature point matches that were not used to solve for the projection matrix are then used to test the found projection matrix to see how many of the feature point matches are in agreement with the found matrix. 
+Once the feature point matches are gathered we apply random sample consensus (RANSAC) to determine the appropriate transformation matrix. To do this, we take the set of feature point matches and sample a set number of matches from them for a passed number of experiments. For each experiment, the feature points are shuffled, and a random subsample of 4 matches is selected from. The 4 subsampled points are then used to solve for the projection matrix given the points. Then the feature point matches from the sample, including the 4 subsampled points, are then used to test the found projection matrix to see how many of the feature point matches are in agreement with the found matrix. 
 
-The sample with the lowest test error is preserved and passed to the apply_transformation fuction. This function applied the projection appropriately to one of the images to bring both images into the same perspective and prepare them to be merged. The sample with the lowest error is also used to isolate a central point imperative for stitching the images together. 
+The sample with the lowest test error is preserved and passed to the apply_transformation fuction. This function applies the projection appropriately to one of the images to bring both images into the same perspective and prepare them to be merged. The sample with the lowest error is also used to calculate the centroid of the sample for each image which we later use as the center point to stitch the two images together.
 
-Using the sample of points, we take the average of those points from image a and image b to get a centroid a and centroid b. For centroid b, from the image that we are projecting to the same perspective of image a, we apply the found transformation matrix to get a transformed centroid b. Once we have transformed centroid b, we then have the correct point to overlay transformed image b on top of image a, then taking the average of the pixels to blend the images together.
+To calculate the centroid, we take the average of those points from image a and image b to get a centroid a and centroid b. For centroid b, from the image that we are projecting to the same perspective of image a, we apply the found transformation matrix to get a transformed centroid b. Once we have transformed centroid b, we then have the correct point to overlay transformed image b on top of image a, then taking the average of the pixels to blend the images together.
 
 Prior to transforming image b, we adjust the image space it will be mapped into to include the maximum image bounds available given the images. This step ensures the projected image will not be overly cropped, giving us the maximum stitched image. 
 
@@ -81,6 +87,8 @@ Prior to transforming image b, we adjust the image space it will be mapped into 
 ### part1.py
 
 The pairwise clustering accuracy from the part1 feature matching algorithm give 82%.
+
+The result of our clustering groups: [output.txt](documentation/part1/output.txt)
 
 ### part2.py
 
@@ -143,6 +151,12 @@ We did have to spend additional time working through the linear algebra in expan
 Additional work we could have done to this code would have been to create a dynamic function to solve for the transformation matrix instead of four separate functions. We could also look into the running time of applying the transformation as it is the longest running time of our code. Future work on the overall problem would involve looking into the skewing we are seeing after applying the inverse warping using a projective transformation matrix. 
 
 ### part3.py
+
+For part 3, we ran into several difficulies. First, it was tuning the various thresholds and parameters that we use for the orb/sift matching and ransac. When doing this, we made several assumptions. We assumed that the number of acceptable Orb matches would be relatively small when configuring the number of iterations and minimum sample size for RANSAC. Additionally, as written, the code assumes that there will be a minimum number of orb matches for the given parameters, which may not always be true.
+
+When implementing RANSAC, we referenced the Wikipedia article [5] in addition to the associated material in the course's Modules.
+
+See the attempts below for example inputs / outputs for various attempts throughout the implementation of part 3.
 
 Attempt 1: 
 
@@ -219,6 +233,9 @@ When attempting to stitch a fourth image on, it failed to match feature points w
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/alternate/small_skyline_1.jpg" alt="image_name"/> | <img src="documentation/part3/alternate/small_skyline_2.jpg" alt="image_name"> | <img src="documentation/part3/alternate/small_skyline_3.jpg" alt="image_name"> | <img src="documentation/part3/alternate/small_skyline.jpg" alt="image_name"> | <img src="documentation/part3/alternate/small_skyline_fail.jpg" alt="image_name"> |
 
+Part 3 could be improved by developing a more dynamic method for finding the hyperparameter for orb detecting/matching and RANSAC to help improve the quality of matches when stitching and to help guarantee that we get matches for a particular pair of images. Additionally, we could potentially try to identify other heuristics to use for the RANSAC error function to improve the quality of the output.
+
+
 ## Conclusions
 
 In conclusion, the goal of this assignment is to gain hands on experience matching images using ORB feature point detection, performing image transformation operations to change image prospectives, and automatically stitching two similar images together utilizing RANSAC. The team was able to perform the required tasks for each part of this assignment as seen in the results section. Increasing the matching algorithm pairwise accuracy and testing a wider range of images could provide overall improvements to these results. We plan on implementing the code and ideas from this assignment in our final project.
@@ -233,7 +250,7 @@ Co-wrote and test part1.py with Bryant. Solved the math for and partially helped
 
 Additonally wrote the `a2` bash script and `a2.py` in order to interface with our `part1.py`, `part2.py`, and `part3.py`. Updated each script to properly interface with `a2.py` bot via their `main()` function as well as via cli.
 
-For the report, wrote my section in the Acknowldeges.
+For the report, wrote my section in the Acknowldeges. Additionally, I contributed to part3.py methods and discussions, 
 
 ### Lucas Franz
 Wrote part2.py inverse warping and bilinear interpolation code. Created "Simple" test cases for work solving different transformations. Implemented transformation solving code provided by Seth. In the report, wrote part2.py methods, results, discussion, and contributed to part3.py methods. 
@@ -253,7 +270,4 @@ Wrote part2.py inverse warping and bilinear interpolation code. Created "Simple"
 
 #To complete:
 - (optional) Seth review Part1 Methods to add any recent changes made.
-- Part 3 Methods and Discussion Sub-Sections
-- Results Section (Add clusters for part1, and image results for part 3)
 - Finalize Acknowledgements Section
-- Add references to documentation to proper sections of the report
