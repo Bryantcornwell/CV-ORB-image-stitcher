@@ -142,8 +142,12 @@ Additional work we could have done to this code would have been to create a dyna
 
 ### part3.py
 
-Difficulties:
-- Implementing RANSAC
+Attempt2:
+
+| Image A Centroid | Image B Centroid  | Output |
+| :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
+| <img src="documentation/part3/attemp2/image_a_centroid.jpg" alt="image_name" width="200"/> | <img src="documentation/part3/attemp2/image_b_centroid.jpg" alt="image_name" width="200"> | <img src="documentation/part3/attemp2/book3.jpg" alt="image_name" width="200"> |
+
 
 ## Conclusions
 
