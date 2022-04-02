@@ -251,7 +251,7 @@ Part 3 could be improved by developing a more dynamic method for finding the hyp
 
 In conclusion, the goal of this assignment is to gain hands on experience matching images using ORB feature point detection, performing image transformation operations to change image prospectives, and automatically stitching two similar images together utilizing RANSAC. The team was able to perform the required tasks for each part of this assignment as seen in the results section. Increasing the matching algorithm pairwise accuracy and testing a wider range of images could provide overall improvements to these results. We plan on implementing the code and ideas from this assignment in our final project.
 
-## Acknowledges
+## Acknowledges / Contributions of the Authors
 ### Bryant Cornwell 
 Co-wrote and tested part1.py with Seth. Contributed to discussions on implementing part2.py and part3.py.  For the report, wrote the introduction, abstract, part1.py discussion, conclusion, and general layout of report. Co-wrote part1.py results, part1.py methods, and part3.py discussion with Seth.
 ### Seth Mize
