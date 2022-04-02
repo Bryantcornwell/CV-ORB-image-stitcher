@@ -253,11 +253,10 @@ In conclusion, the goal of this assignment is to gain hands on experience matchi
 
 ## Acknowledges
 ### Bryant Cornwell 
-Co-wrote and tested part1.py with Seth. Contributed to discussions on implementing part2.py and part3.py. 
-For the report, wrote the introduction, abstract, part1.py methods, part1.py results, part1.py discussion, part3.py dicussion, conclusion, and general layout of report.
+Co-wrote and tested part1.py with Seth. Contributed to discussions on implementing part2.py and part3.py.  For the report, wrote the introduction, abstract, part1.py discussion, conclusion, and general layout of report. Co-wrote part1.py results, part1.py methods, and part3.py discussion with Seth.
 ### Seth Mize
 
-Co-wrote and test part1.py with Bryant. Solved the math for and partially helped with the implementation of the projection, affine, euclidean, and translation matrices for part2. Created and modified utility functions in parts 1 and 2 to integrate with part3. Wrote the code for part 3.
+Co-wrote and tested part1.py with Bryant. Solved the math for and partially helped with the implementation of the projection, affine, euclidean, and translation matrices for part2. Created and modified utility functions in parts 1 and 2 to integrate with part3. Wrote the code for part 3.
 
 Additonally wrote the `a2` bash script and `a2.py` in order to interface with our `part1.py`, `part2.py`, and `part3.py`. Updated each script to properly interface with `a2.py` bot via their `main()` function as well as via cli.
 
