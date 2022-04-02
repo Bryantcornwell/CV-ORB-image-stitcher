@@ -178,7 +178,7 @@ Attempt 5:
 
 | Image A Centroid | Image B Centroid  | Output |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
-| <img src="documentation/part3/attempt5/image_a_centroid.jpg" alt="image_name" width="200"/> | <img src="documentation/part3/attempt5/image_b_centroid.jpg" alt="image_name" width="200"> | <img src="documentation/part3/attempt5/image_b_t_centroid.jpg" alt="image_name"> |
+| <img src="documentation/part3/attempt5/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt5/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt5/image_b_t_centroid.jpg" alt="image_name"> |
 
 
 ## Conclusions
