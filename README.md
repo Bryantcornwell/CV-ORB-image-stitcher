@@ -261,7 +261,7 @@ Co-wrote and test part1.py with Bryant. Solved the math for and partially helped
 
 Additonally wrote the `a2` bash script and `a2.py` in order to interface with our `part1.py`, `part2.py`, and `part3.py`. Updated each script to properly interface with `a2.py` bot via their `main()` function as well as via cli.
 
-For the report, wrote my section in the Acknowldeges. Additionally, I contributed to part3.py methods and discussions, 
+For the report, wrote my section in the Acknowldeges. Additionally, I contributed to part3.py methods, discussions, and results; part1.py methods and results; part2.py methods; and the references section.
 
 ### Lucas Franz
 Wrote part2.py inverse warping and bilinear interpolation code. Created "Simple" test cases for work solving different transformations. Implemented transformation solving code provided by Seth. In the report, wrote part2.py methods, results, discussion, and contributed to part3.py methods. 
@@ -278,6 +278,3 @@ Wrote part2.py inverse warping and bilinear interpolation code. Created "Simple"
 [5] RANSAC reference: https://en.wikipedia.org/wiki/Random_sample_consensus
 
 [6] Hierarchical agglomerative clustering: https://en.wikipedia.org/wiki/Hierarchical_clustering
-
-#To complete:
-- Finalize Acknowledgements Section
