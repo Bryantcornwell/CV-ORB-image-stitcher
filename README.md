@@ -114,7 +114,7 @@ Our final results of stitching two images together are in the table below:
 
 | Image A | Image B | A and B Panorama |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
-| <img src="documentation/part3/attempt7/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt7/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt7/image_stitched.jpg" alt="image_name"> |
+| <img src="documentation/part3/attempt7/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt7/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt7/one_america_2_to_1.jpg" alt="image_name"> |
 
 To see more results, view the rest of the tables of images in the Discussion section of `part3.py`.
 
