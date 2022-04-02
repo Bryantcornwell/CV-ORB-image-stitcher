@@ -192,6 +192,32 @@ First attempt at stitching the two images together.
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/attempt6/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt6/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt6/image_stitched.jpg" alt="image_name"> |
 
+Attempt 7:
+
+Updated the pixel-wise averaging to only average where the two images overlap, otherwise we kept the
+pixel value from whichever image was there. If no images mapped to the pixel, we left it black.
+
+| Image A Centroid | Image B Centroid  | Stitched |
+| :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
+| <img src="documentation/part3/attempt7/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt7/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt7/image_stitched.jpg" alt="image_name"> |
+
+Attempt 8:
+
+This time, we stitch the results of Attempt 7 with a third image. 
+
+| Image A Centroid | Image B Centroid  | Stitched |
+| :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
+| <img src="documentation/part3/attempt8/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt8/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt8/image_stitched.jpg" alt="image_name"> |
+
+Alternative Test:
+
+We tried the stitching on some other images with a lot more going on in them, attempting to match based on features in the background / skyline. It was less successful than the One America sign images, but it still turned out alright.
+
+When attempting to stitch a fourth image on, it failed to match feature points well, resulting in the Stitched Failed image below.
+
+| Left Image | Middle Image | Right Image | Stitched | Stitched Failed|
+| :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | 
+| <img src="documentation/part3/alternate/small_skyline_1.jpg" alt="image_name"/> | <img src="documentation/part3/alternate/small_skyline_2.jpg" alt="image_name"> | <img src="documentation/part3/alternate/small_skyline_3.jpg" alt="image_name"> | <img src="documentation/part3/alternate/small_skyline.jpg" alt="image_name"> | <img src="documentation/part3/alternate/small_skyline_fail.jpg" alt="image_name"> |
 
 ## Conclusions
 
@@ -202,6 +228,13 @@ In conclusion, the goal of this assignment is to gain hands on experience matchi
 Co-wrote and tested part1.py with Seth. Contributed to discussions on implementing part2.py and part3.py. 
 For the report, wrote the introduction, abstract, part1.py methods, part1.py results, part1.py discussion, part3.py dicussion, conclusion, and general layout of report.
 ### Seth Mize
+
+Co-wrote and test part1.py with Bryant. Solved the math for and partially helped with the implementation of the projection, affine, euclidean, and translation matrices for part2. Created and modified utility functions in parts 1 and 2 to integrate with part3. Wrote the code for part 3.
+
+Additonally wrote the `a2` bash script and `a2.py` in order to interface with our `part1.py`, `part2.py`, and `part3.py`. Updated each script to properly interface with `a2.py` bot via their `main()` function as well as via cli.
+
+For the report, wrote my section in the Acknowldeges.
+
 ### Lucas Franz
 Wrote part2.py inverse warping and bilinear interpolation code. Created "Simple" test cases for work solving different transformations. Implemented transformation solving code provided by Seth. In the report, wrote part2.py methods, results, discussion, and contributed to part3.py methods. 
 

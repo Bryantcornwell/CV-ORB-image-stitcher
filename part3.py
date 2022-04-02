@@ -15,10 +15,12 @@ def centroid(points):
 
 
 def ransac(point_matches, sample_size, iterations, threshold, min_match_sample_size):
-    # RANSAC some $#17
+    # Referenced the Wiki article on RANSAC to develop a better understanding of how
+    # to implement it, including referencing the pseudocode.
 
     best_transform = None
     best_sample = None
+    best_sample_test_size = 0
     best_error = np.inf
 
     print(len(point_matches))
@@ -38,11 +40,12 @@ def ransac(point_matches, sample_size, iterations, threshold, min_match_sample_s
             else:
                 new_sample = np.concatenate([sample, sample_test])
             error = test_transition_matrix(transform, new_sample)
-            if error < best_error:
+            if error < best_error or (error == best_error and len(sample_test) > best_sample_test_size):
                 print(i, error)
                 best_transform = transform
                 best_error = error
                 best_sample = new_sample
+                best_sample_test_size = len(sample_test)
 
         i += 1
 
@@ -87,9 +90,9 @@ def stitch(image_a, image_b, centroid_a, centroid_b):
 
     height_a, width_a, _ = image_a.shape
     height_b, width_b, _ = image_b.shape
-    print(height_a, width_a, height_b, width_b)
 
-    centroid_delta = np.rint(centroid_b - centroid_a).astype(int)
+    #centroid_delta = np.rint(centroid_b - centroid_a).astype(int)
+    centroid_delta = np.rint(centroid_b).astype(int) - np.rint(centroid_a).astype(int)
 
     pad_a_top = round((centroid_delta[0] > 0) * abs(centroid_delta[0]))
     pad_a_left = round((centroid_delta[1] > 0) * abs(centroid_delta[1]))
@@ -122,18 +125,13 @@ def stitch(image_a, image_b, centroid_a, centroid_b):
 
 def main(image_1, image_2, output):
 
-    # MATCH ON CENTROID
-    # AVERAGE PIXEL BY PIXEL
-    # SMOOTH IMAGE
-    # FIGURE OUT HOW TO GET THE IMAGES TO MATCH IN SIZE WITHOUT FUCKING SHIT UP!
-
     image_a = cv2.imread(str(Path(image_1)))
     image_b = cv2.imread(str(Path(image_2)))
 
-    point_matches = np.array(orb_sift_match(image_1, image_2, threshold=0.5, nfeatures=1000))
+    point_matches = np.array(orb_sift_match(image_1, image_2, threshold=0.75, nfeatures=2500))
     point_matches = point_matches[:,-2:]
     point_matches = np.array(list(map(list, point_matches)))
-    transform_matrix, shared_coordinates, centroid_a, centroid_b = ransac(point_matches, 4, 30000, 0.75, max(int(0.1*len(point_matches)), 8))
+    transform_matrix, shared_coordinates, centroid_a, centroid_b = ransac(point_matches, 4, 5000*int(np.sqrt(len(point_matches))), 0.75, max(int(0.1*len(point_matches)), 6))
     centroid_b_t = map_single_point(transform_matrix, centroid_b)
     transformed = apply_transformation(image_b, transform_matrix)
     transformed_centroid = deepcopy(transformed)
