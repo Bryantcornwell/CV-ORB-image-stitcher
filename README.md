@@ -185,6 +185,10 @@ Correctly fit the transformed image into the image boundary.
 
 ## Conclusions
 
+In conclusion, the goal of this assignment is to gain hands on experience matching images using ORB feature point detection, performing image transformation operations to change image prospectives, and automatically stitching two similar images together utilizing RANSAC.
+
+We plan on implementing the code and ideas from this assignment to  
+
 ## Acknowledges
 ### Bryant Cornwell 
 Co-wrote and tested part1.py with Seth. Contributed to discussions on implementing part2.py and part3.py. 
