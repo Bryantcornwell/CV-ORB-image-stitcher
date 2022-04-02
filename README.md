@@ -168,13 +168,15 @@ Applying the algorithm from attempt 2 to our images. Notice nearly half of the t
 
 Attempt 4:
 
-
+Trying to fit the transformation inside of the image by extending the image boundary.
 
 | Image A Centroid | Image B Centroid  | Output |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/attempt4/image_a_centroid.jpg" alt="image_name" width="200"/> | <img src="documentation/part3/attempt4/image_b_centroid.jpg" alt="image_name" width="200"> | <img src="documentation/part3/attempt4/image_b_t_centroid.jpg" alt="image_name" width="200"> |
 
 Attempt 5:
+
+Correctly fit the transformed image into the image boundary.
 
 | Image A Centroid | Image B Centroid  | Output |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
