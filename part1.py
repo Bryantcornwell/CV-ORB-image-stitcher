@@ -131,36 +131,20 @@ def orb_sift_match(image_a, image_b, threshold=0.75, nfeatures=500):
     global SAVE_IMG
 
     image_a, image_b = map(Path, [image_a, image_b])
-    # Does some shit
-    # Returns Boolean (True or False)
-    # Possibly return distance to closest and second closest match too
-    # E.g True/False
-    # (True/False, distance, another_distance)
 
     img1 = load_image(image_a)
     img2 = load_image(image_b)
     
     x_max = max(img1.shape[1], img2.shape[1])
     y_max = max(img1.shape[0], img2.shape[0])
-    #img1 = cv2.copyMakeBorder(img1, top=0, bottom=y_max-img1.shape[0], left=0, right=x_max-img1.shape[1], borderType=cv2.BORDER_CONSTANT)
-    #img2 = cv2.copyMakeBorder(img2, top=0, bottom=y_max-img2.shape[0], left=0, right=x_max-img2.shape[1], borderType=cv2.BORDER_CONSTANT)
 
     # you can increase nfeatures to adjust how many features to detect
     orb = cv2.ORB_create(nfeatures=nfeatures)
 
     (keypoints1, descriptors1) = orb.detectAndCompute(img1, None)
     (keypoints2, descriptors2) = orb.detectAndCompute(img2, None)
-    # Test image
-    #test_img = cv2.hconcat([img1, img2])
 
     desc_matches = match_points(descriptors1, descriptors2)
-    #output_path = Path(f'outputs/{runtime}/{int(threshold*100)}')
-    #output_img = cv2.drawMatchesKnn(img1, keypoints1, img2, keypoints2, desc_matches, None)
-    #if SAVE_IMG:
-    #    if not output_path.exists():
-    #        output_path.mkdir(parents=True, exist_ok=True)
-    #    if not cv2.imwrite(f'{output_path}/{image_a.name}_{image_b.name}.png', output_img):
-    #        raise Exception(f'{output_path}/{image_a.name}_{image_b.name}.png')
     point_matches = []
 
     for closest, next_closest in desc_matches:
