@@ -182,6 +182,14 @@ Correctly fit the transformed image into the image boundary.
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/attempt5/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt5/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt5/image_b_t_centroid.jpg" alt="image_name"> |
 
+Attempt 6:
+
+Starting to to try and setup the images for stitching
+
+| Image A Centroid | Image B Centroid  | Output |
+| :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
+| <img src="documentation/part3/attempt6/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt6/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt6/image_b_t_centroid.jpg" alt="image_name"> |
+
 
 ## Conclusions
 
