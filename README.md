@@ -195,9 +195,7 @@ First attempt at stitching the two images together.
 
 ## Conclusions
 
-In conclusion, the goal of this assignment is to gain hands on experience matching images using ORB feature point detection, performing image transformation operations to change image prospectives, and automatically stitching two similar images together utilizing RANSAC.
-
-We plan on implementing the code and ideas from this assignment to  
+In conclusion, the goal of this assignment is to gain hands on experience matching images using ORB feature point detection, performing image transformation operations to change image prospectives, and automatically stitching two similar images together utilizing RANSAC. The team was able to perform the required tasks for each part of this assignment as seen in the results section. Increasing the matching algorithm pairwise accuracy and testing a wider range of images could provide overall improvements to these results. We plan on implementing the code and ideas from this assignment in our final project.
 
 ## Acknowledges
 ### Bryant Cornwell 
