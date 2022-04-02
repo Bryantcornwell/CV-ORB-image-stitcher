@@ -200,7 +200,7 @@ In conclusion, the goal of this assignment is to gain hands on experience matchi
 ## Acknowledges
 ### Bryant Cornwell 
 Co-wrote and tested part1.py with Seth. Contributed to discussions on implementing part2.py and part3.py. 
-For the report, wrote the introduction, abstract, part1.py methods, part1.py results, part1.py discussion, and general layout of report.
+For the report, wrote the introduction, abstract, part1.py methods, part1.py results, part1.py discussion, part3.py dicussion, conclusion, and general layout of report.
 ### Seth Mize
 ### Lucas Franz
 Wrote part2.py inverse warping and bilinear interpolation code. Created "Simple" test cases for work solving different transformations. Implemented transformation solving code provided by Seth. In the report, wrote part2.py methods, results, discussion, and contributed to part3.py methods. 
@@ -222,6 +222,5 @@ Wrote part2.py inverse warping and bilinear interpolation code. Created "Simple"
 - (optional) Seth review Part1 Methods to add any recent changes made.
 - Part 3 Methods and Discussion Sub-Sections
 - Results Section (Add clusters for part1, and image results for part 3)
-- Conclusion Section
 - Finalize Acknowledgements Section
 - Add references to documentation to proper sections of the report
