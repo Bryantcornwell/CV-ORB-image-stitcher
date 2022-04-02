@@ -48,18 +48,18 @@ def apply_transformation(img, transform_array):
     bottom_left = (bottom_left / bottom_left[2])[:2]
     bottom_right = np.matmul(inv_transform_array, bottom_right)
     bottom_right = (bottom_right / bottom_right[2])[:2]
-    max_y = np.rint(max([top_left[0], top_right[0], bottom_left[0], bottom_right[0]])).astype(int)
-    max_x = np.rint(max([top_left[1], top_right[1], bottom_left[1], bottom_right[1]])).astype(int)
+    max_y = np.rint(max([top_left[0], top_right[0], bottom_left[0], bottom_right[0]])).astype(int)+1
+    max_x = np.rint(max([top_left[1], top_right[1], bottom_left[1], bottom_right[1]])).astype(int)+1
 
-    new_img = np.zeros(shape=(max_y, max_x))
-    print(new_img.shape, img.shape, max_x, max_y, top_left, top_right, bottom_left, bottom_right)
+    #new_img = np.zeros(shape=(max_y, max_x, 3))
+    new_img = np.zeros(shape=(max_x, max_y, 3))
+    #print(new_img.shape, img.shape, max_x, max_y, top_left, top_right, bottom_left, bottom_right)
 
     # Loop through coordinates and
     # apply inverse transformation
     for r in range(new_img.shape[0]):
         for c in range(new_img.shape[1]):
             current_coor = np.array([c, r, 1])
-            print(current_coor)
             old_coor = np.matmul(transform_array, current_coor)
             old_x = old_coor[0] / old_coor[2]
             old_y = old_coor[1] / old_coor[2]
@@ -69,8 +69,7 @@ def apply_transformation(img, transform_array):
                 old_x < img.shape[1] and \
                 old_y > 0 and \
                 old_x > 0:
-
-                    new_img[r, c] = apply_interpolation(old_x, old_y, img)
+                    new_img[r, c] = np.rint(apply_interpolation(old_x, old_y, img)).astype(int)
 
     return new_img
 

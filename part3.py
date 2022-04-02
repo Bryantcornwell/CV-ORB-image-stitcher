@@ -63,10 +63,27 @@ def map_single_point(matrix, point):
 
     return point
 
+def stitch(image_a, image_b, centroid_a, centroid_b):
+
+    height_a, width_a = image_a.shape
+    height_b, width_b = image_b.shape
+
+    centroid_delta = centroid_b - centroid_a
+
+    pad_a_top = (centroid_delta[1] > 0) * abs(centroid_delta[1])
+    pad_a_left
+    pad_a_bottom
+    pad_a_right
+
+    pad_b_top
+    pad_b_left
+    pad_b_bottom
+    pad_b_right
+
+
 
 def main(image_1, image_2, output):
 
-    # CALCULATE CENTROID
     # MATCH ON CENTROID
     # AVERAGE PIXEL BY PIXEL
     # SMOOTH IMAGE
@@ -84,13 +101,19 @@ def main(image_1, image_2, output):
     cv2.imwrite('padded_image.png', padded_image)
     transformed = apply_transformation(image_b, transform_matrix)
     transformed_centroid = deepcopy(transformed)
+
+    stitched = stitch(image_a, image_b, centroid_a, centroid_b_t)
+
+    # Visualize the point-matches' centroids on the output images
     transformed_centroid = cv2.circle(transformed_centroid, np.rint(centroid_b_t).astype(int), 5, (0,255,0), -1)
     image_a = cv2.circle(image_a, np.rint(centroid_a).astype(int), 5, (0,255,0), -1)
     image_b = cv2.circle(image_b, np.rint(centroid_b).astype(int), 5, (0,255,0), -1)
     cv2.imwrite('outputs/part3/image_a_centroid.jpg', image_a)
     cv2.imwrite('outputs/part3/image_b_centroid.jpg', image_b)
     cv2.imwrite('outputs/part3/image_b_t_centroid.jpg', transformed_centroid)
-    cv2.imwrite(str(Path(output)), transformed)
+
+    # Display output
+    cv2.imwrite(str(Path(output)), stitched)
     
 
 if __name__ == '__main__':
