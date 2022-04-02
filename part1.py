@@ -259,14 +259,13 @@ def main(images, output, k=10):
         print(f'Accuracy: {accuracy_pairwise_cluster(clusters)}')
     except:
         print(f'Accuracy: File pattern could not be determined for accuracy calculation.')
-    with open('output.txt', 'w+') as file:
+    with open(output, 'w+') as file:
         output_text = '\n'.join([' '.join([value for value in clusters[label]]) for label in clusters])
         print(output_text)
         file.write(output_text)
 
 
 if __name__ == '__main__':
-    warnings.filterwarnings("ignore")
     # Step 1 Determine ORB Matching
     try:
         k = int(sys.argv[1])

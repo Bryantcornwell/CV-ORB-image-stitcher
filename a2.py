@@ -2,6 +2,8 @@
 
 import sys
 import warnings
+from pathlib import Path
+
 from part1 import main as part1main
 from part2 import main as part2main
 from part3 import main as part3main
