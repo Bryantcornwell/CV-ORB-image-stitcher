@@ -65,22 +65,43 @@ def map_single_point(matrix, point):
 
 def stitch(image_a, image_b, centroid_a, centroid_b):
 
-    height_a, width_a = image_a.shape
-    height_b, width_b = image_b.shape
+    height_a, width_a, _ = image_a.shape
+    height_b, width_b, _ = image_b.shape
+    print(height_a, width_a, height_b, width_b)
 
-    centroid_delta = centroid_b - centroid_a
+    centroid_delta = np.rint(centroid_b - centroid_a).astype(int)
 
-    pad_a_top = (centroid_delta[1] > 0) * abs(centroid_delta[1])
-    pad_a_left
-    pad_a_bottom
-    pad_a_right
+    pad_a_top = round((centroid_delta[0] > 0) * abs(centroid_delta[0]))
+    pad_a_left = round((centroid_delta[1] > 0) * abs(centroid_delta[1]))
+    
+    pad_b_top = round((centroid_delta[0] < 0) * abs(centroid_delta[0]))
+    pad_b_left = round((centroid_delta[1] < 0) * abs(centroid_delta[1]))
 
-    pad_b_top
-    pad_b_left
-    pad_b_bottom
-    pad_b_right
+    pad_a_bottom = max(height_a + pad_a_top, height_b + pad_b_top) - height_a
+    pad_a_right = max(width_a + pad_a_left, width_b + pad_b_left) - width_a
 
+    pad_b_bottom = max(height_a + pad_a_top, height_b + pad_b_top) - height_b
+    pad_b_right = max(width_a + pad_a_left, width_b + pad_b_left) - width_b
 
+    new_height_a = height_a + pad_a_top + pad_a_bottom
+    new_width_a = width_a + pad_a_left + pad_a_right
+    new_height_b = height_b + pad_b_top + pad_b_bottom
+    new_width_b = width_b + pad_b_left + pad_b_right
+
+    pad_a_right = pad_a_right + (new_width_b > new_width_a) * (new_width_b - new_width_a)
+    pad_b_right = pad_b_right + (new_width_b < new_width_a) * (new_width_a - new_width_b)
+    pad_a_bottom = pad_a_bottom + (new_height_b > new_height_a) * (new_height_b - new_height_a)
+    pad_b_bottom = pad_b_bottom + (new_height_b < new_height_a) * (new_height_a - new_height_b)
+
+    print(image_a.shape, image_b.shape)
+
+    image_a = cv2.copyMakeBorder(image_a, pad_a_top, pad_a_bottom, pad_a_left, pad_a_right, borderType=cv2.BORDER_CONSTANT)
+    image_b = cv2.copyMakeBorder(image_b, pad_b_top, pad_b_bottom, pad_b_left, pad_b_right, borderType=cv2.BORDER_CONSTANT)
+
+    stitched = np.rint((image_a + image_b) / 2).astype(int)
+    print(stitched.shape)
+
+    return stitched
 
 def main(image_1, image_2, output):
 
@@ -95,14 +116,15 @@ def main(image_1, image_2, output):
     point_matches = np.array(orb_sift_match(image_1, image_2, threshold=0.5, nfeatures=1000))
     point_matches = point_matches[:,-2:]
     point_matches = np.array(list(map(list, point_matches)))
-    transform_matrix, shared_coordinates, centroid_a, centroid_b = ransac(point_matches, 4, 30000, 0.75, int(0.1*len(point_matches)))
+    transform_matrix, shared_coordinates, centroid_a, centroid_b = ransac(point_matches, 4, 30000, 0.75, max(int(0.1*len(point_matches)), 8))
     centroid_b_t = map_single_point(transform_matrix, centroid_b)
-    padded_image = image_b
-    cv2.imwrite('padded_image.png', padded_image)
     transformed = apply_transformation(image_b, transform_matrix)
     transformed_centroid = deepcopy(transformed)
 
-    stitched = stitch(image_a, image_b, centroid_a, centroid_b_t)
+    stitched = stitch(image_a, transformed, centroid_a, centroid_b_t)
+    print(stitched.shape)
+    # Display output
+    cv2.imwrite(str(Path(output)), stitched)
 
     # Visualize the point-matches' centroids on the output images
     transformed_centroid = cv2.circle(transformed_centroid, np.rint(centroid_b_t).astype(int), 5, (0,255,0), -1)
@@ -111,9 +133,8 @@ def main(image_1, image_2, output):
     cv2.imwrite('outputs/part3/image_a_centroid.jpg', image_a)
     cv2.imwrite('outputs/part3/image_b_centroid.jpg', image_b)
     cv2.imwrite('outputs/part3/image_b_t_centroid.jpg', transformed_centroid)
+    cv2.imwrite('outputs/part3/image_stitched.jpg', stitch(image_a, transformed_centroid, centroid_a, centroid_b_t))
 
-    # Display output
-    cv2.imwrite(str(Path(output)), stitched)
     
 
 if __name__ == '__main__':

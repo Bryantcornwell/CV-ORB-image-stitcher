@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 from multiprocessing import Pool, freeze_support
 from functools import partial
+import warnings
 
 from PIL import ImageDraw, Image, ImageOps
 import cv2
@@ -281,6 +282,7 @@ def main(images, output, k=10):
 
 
 if __name__ == '__main__':
+    warnings.filterwarnings("ignore")
     # Step 1 Determine ORB Matching
     try:
         k = int(sys.argv[1])
