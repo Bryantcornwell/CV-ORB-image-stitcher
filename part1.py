@@ -266,6 +266,7 @@ def main(images, output, k=10):
 
 
 if __name__ == '__main__':
+    warnings.filterwarnings("ignore")
     # Step 1 Determine ORB Matching
     try:
         k = int(sys.argv[1])

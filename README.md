@@ -173,7 +173,7 @@ Attempt 1:
 
 Mapping a centroid to the coordination system in Image A from Image B.
 
-| Image A Centroid | Image B Centroid  | Output |
+| Image A w/ Centroid | Image B w/ Centroid  | Output |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/attempt1/image_a_centroid.jpg" alt="image_name" width="200"/> | <img src="documentation/part3/attempt1/image_b_centroid.jpg" alt="image_name" width="200"> | <img src="documentation/part3/attempt1/book3.jpg" alt="image_name" width="200"> |
 
@@ -181,7 +181,7 @@ Attempt 2:
 
 Correctly mapping an Image B centroid to Image A coordinate system.
 
-| Image A Centroid | Image B Centroid  | Output |
+| Image A w/ Centroid | Image B w/ Centroid  | Output |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/attempt2/image_a_centroid.jpg" alt="image_name" width="200"/> | <img src="documentation/part3/attempt2/image_b_centroid.jpg" alt="image_name" width="200"> | <img src="documentation/part3/attempt2/book3.jpg" alt="image_name" width="200"> |
 
@@ -189,7 +189,7 @@ Attempt 3:
 
 Applying the algorithm from attempt 2 to our images. Notice nearly half of the transformed image is cut off.
 
-| Image A Centroid | Image B Centroid  | Output |
+| Image A w/ Centroid | Image B w/ Centroid  | Output |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/attempt3/image_a_centroid.jpg" alt="image_name" width="200"/> | <img src="documentation/part3/attempt3/image_b_centroid.jpg" alt="image_name" width="200"> | <img src="documentation/part3/attempt3/image_b_t_centroid.jpg" alt="image_name" width="200"> |
 
@@ -197,7 +197,7 @@ Attempt 4:
 
 Trying to fit the transformation inside of the image by extending the image boundary.
 
-| Image A Centroid | Image B Centroid  | Output |
+| Image A w/ Centroid | Image B w/ Centroid  | Output |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/attempt4/image_a_centroid.jpg" alt="image_name" width="200"/> | <img src="documentation/part3/attempt4/image_b_centroid.jpg" alt="image_name" width="200"> | <img src="documentation/part3/attempt4/image_b_t_centroid.jpg" alt="image_name" width="200"> |
 
@@ -205,7 +205,7 @@ Attempt 5:
 
 Correctly fit the transformed image into the image boundary.
 
-| Image A Centroid | Image B Centroid  | Output |
+| Image A w/ Centroid | Image B w/ Centroid  | Output |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/attempt5/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt5/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt5/image_b_t_centroid.jpg" alt="image_name"> |
 
@@ -213,7 +213,7 @@ Attempt 6:
 
 First attempt at stitching the two images together.
 
-| Image A Centroid | Image B Centroid  | Stitched |
+| Image A w/ Centroid | Image B w/ Centroid  | Stitched |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/attempt6/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt6/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt6/image_stitched.jpg" alt="image_name"> |
 
@@ -222,7 +222,7 @@ Attempt 7:
 Updated the pixel-wise averaging to only average where the two images overlap, otherwise we kept the
 pixel value from whichever image was there. If no images mapped to the pixel, we left it black.
 
-| Image A Centroid | Image B Centroid  | Stitched |
+| Image A w/ Centroid | Image B w/ Centroid  | Stitched |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/attempt7/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt7/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt7/image_stitched.jpg" alt="image_name"> |
 
@@ -230,7 +230,7 @@ Attempt 8:
 
 This time, we stitch the results of Attempt 7 with a third image. 
 
-| Image A Centroid | Image B Centroid  | Stitched |
+| Image A w/ Centroid | Image B w/ Centroid  | Stitched |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/part3/attempt8/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt8/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt8/image_stitched.jpg" alt="image_name"> |
 
