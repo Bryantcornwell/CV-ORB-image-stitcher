@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 import sys
+import warnings
 from part1 import main as part1main
 from part2 import main as part2main
 from part3 import main as part3main
 
 if __name__ == '__main__':
+    warnings.filterwarnings("ignore")
 
     part_n = sys.argv[1]
 
@@ -36,7 +38,7 @@ if __name__ == '__main__':
     elif part_n == 'part3':
 
         try:
-            image_1, image_2, output = sys.argv[1:]
+            image_1, image_2, output = sys.argv[2:]
         except:
             raise Exception(f'Usage: python3 part3.py <image_1> <image_2> <output_image>')
 

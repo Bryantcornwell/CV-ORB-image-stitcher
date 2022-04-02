@@ -63,6 +63,26 @@ def map_single_point(matrix, point):
 
     return point
 
+def average_pixels(image_a, image_b):
+
+    BLACK = np.array([0,0,0])
+    new_image = np.zeros(shape=image_a.shape)
+
+    for x in range(image_a.shape[1]):
+        for y in range(image_a.shape[0]):
+            axy = image_a[y,x]
+            bxy = image_b[y,x]
+
+            if (axy == BLACK).all():
+                new_image[y,x] = bxy
+            elif (bxy == BLACK).all():
+                new_image[y,x] = axy
+            else:
+                new_image[y,x] = (axy + bxy) / 2
+    
+    new_image = np.rint(new_image).astype(int)
+    return new_image
+
 def stitch(image_a, image_b, centroid_a, centroid_b):
 
     height_a, width_a, _ = image_a.shape
@@ -93,13 +113,10 @@ def stitch(image_a, image_b, centroid_a, centroid_b):
     pad_a_bottom = pad_a_bottom + (new_height_b > new_height_a) * (new_height_b - new_height_a)
     pad_b_bottom = pad_b_bottom + (new_height_b < new_height_a) * (new_height_a - new_height_b)
 
-    print(image_a.shape, image_b.shape)
-
     image_a = cv2.copyMakeBorder(image_a, pad_a_top, pad_a_bottom, pad_a_left, pad_a_right, borderType=cv2.BORDER_CONSTANT)
     image_b = cv2.copyMakeBorder(image_b, pad_b_top, pad_b_bottom, pad_b_left, pad_b_right, borderType=cv2.BORDER_CONSTANT)
 
-    stitched = np.rint((image_a + image_b) / 2).astype(int)
-    print(stitched.shape)
+    stitched = average_pixels(image_a, image_b)
 
     return stitched
 
@@ -122,7 +139,6 @@ def main(image_1, image_2, output):
     transformed_centroid = deepcopy(transformed)
 
     stitched = stitch(image_a, transformed, centroid_a, centroid_b_t)
-    print(stitched.shape)
     # Display output
     cv2.imwrite(str(Path(output)), stitched)
 
