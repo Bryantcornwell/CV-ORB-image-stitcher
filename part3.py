@@ -136,20 +136,20 @@ def main(image_1, image_2, output):
     transform_matrix, shared_coordinates, centroid_a, centroid_b = ransac(point_matches, 4, 5000*int(np.sqrt(len(point_matches))), 0.75, max(int(0.1*len(point_matches)), 6))
     centroid_b_t = map_single_point(transform_matrix, centroid_b)
     transformed = apply_transformation(image_b, transform_matrix)
-    transformed_centroid = deepcopy(transformed)
+    # transformed_centroid = deepcopy(transformed)
 
     stitched = stitch(image_a, transformed, centroid_a, centroid_b_t)
     # Display output
     cv2.imwrite(str(Path(output)), stitched)
 
     # Visualize the point-matches' centroids on the output images
-    transformed_centroid = cv2.circle(transformed_centroid, np.rint(centroid_b_t).astype(int), 5, (0,255,0), -1)
-    image_a = cv2.circle(image_a, np.rint(centroid_a).astype(int), 5, (0,255,0), -1)
-    image_b = cv2.circle(image_b, np.rint(centroid_b).astype(int), 5, (0,255,0), -1)
-    cv2.imwrite('outputs/part3/image_a_centroid.jpg', image_a)
-    cv2.imwrite('outputs/part3/image_b_centroid.jpg', image_b)
-    cv2.imwrite('outputs/part3/image_b_t_centroid.jpg', transformed_centroid)
-    cv2.imwrite('outputs/part3/image_stitched.jpg', stitch(image_a, transformed_centroid, centroid_a, centroid_b_t))
+    # transformed_centroid = cv2.circle(transformed_centroid, np.rint(centroid_b_t).astype(int), 5, (0,255,0), -1)
+    # image_a = cv2.circle(image_a, np.rint(centroid_a).astype(int), 5, (0,255,0), -1)
+    # image_b = cv2.circle(image_b, np.rint(centroid_b).astype(int), 5, (0,255,0), -1)
+    # cv2.imwrite('outputs/part3/image_a_centroid.jpg', image_a)
+    # cv2.imwrite('outputs/part3/image_b_centroid.jpg', image_b)
+    # cv2.imwrite('outputs/part3/image_b_t_centroid.jpg', transformed_centroid)
+    # cv2.imwrite('outputs/part3/image_stitched.jpg', stitch(image_a, transformed_centroid, centroid_a, centroid_b_t))
 
     
 
