@@ -20,18 +20,19 @@ Run the code from the terminal using the following format on the linux server an
     python3 a2.py part1 <k> images/*.png outputfile_txt
 
 The first task of part1.py was to load two images using OpenCV library and create a border around each image based on the largest image width and height. The border was used for image concatenation when testing both images side by side. 
-An orb object is created to detect 1000 features within each image and extract points & descriptors for each feature. 
-To check for a match, you iterate through all pairing of orbs between image A and image B and for each pairing we calculate the hamming distance. 
+An orb object is created to detect a provided number of features (default of 500) within each image and extract points & descriptors for each feature. 
+To check for a match, we iterate through all pairing of orbs between image A and image B and for each pairing we calculate the hamming distance. 
 Next we go through each orb and determine the nearest and second nearest descriptors in order to determine if the match is good or not.
 The final matching algorithm we used to perform this matching is a brute force matcher from opencv (cv2.BFMatcher()).
-To check for a good match, the ratio of closest and next_closest hamming distances compared to a threshold of 0.75 for each match. If the ratio is lower than the threshold, it is considered a good match and the corresponding points are passed to a list.
+To check for a good match, the ratio of closest and next_closest hamming distances is compared to a given threshold (default of 0.75) for each match. If the ratio is lower than the threshold, it is considered a good match and the corresponding points are passed to a list.
 
-The assignment hinted the use of agglomerative clustering since we had pairwise distances between objects and not a feature for each image.
+The assignment hinted at the use of agglomerative clustering since we have pairwise distances between objects and not a feature for each image.
 Given the input number of clusters, k, and the input images, we fit the orb pair distances utilizing sklearn's agglomerative clustering algorithm to generate clusters. 
 Each cluster is added to a dictionary and used to determine the pairwise clustering accuracy.
 The accuracy is computed by adding the number of true positive and true negatives together and dividing by the total number of possible pairs of images. 
-A pair is a true positive is when a pair has the same image name and is in the same cluster.
-A pair is a true negative is when a pair does not have the same image name and is not in the same cluster.
+A pair is a true positive is when a pair is two images of the same object and is in the same cluster.
+A pair is a true negative is when a pair is not two images of the same object and is not in the same cluster.
+For the test set we used, we determined whether two images were of the same object for testing based on a substring in the source image names that represents the object they are a picture of.
 This part concludes by printing the pairwise clustering accuracy and writing the clusters separated by a newline to an output.txt file.
 
 
@@ -106,6 +107,16 @@ The second test case involved testing our solved transformation matrix for proje
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
 | <img src="documentation/images/book1.jpg" alt="image_name" width="200"/> | <img src="documentation/images/book2.jpg" alt="image_name" width="200"> | <img src="documentation/images/book3.jpg" alt="image_name" width="200"> |
 
+
+### part3.py
+
+Our final results of stitching two images together are in the table below:
+
+| Image A | Image B | A and B Panorama |
+| :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
+| <img src="documentation/part3/attempt7/image_a_centroid.jpg" alt="image_name"/> | <img src="documentation/part3/attempt7/image_b_centroid.jpg" alt="image_name"> | <img src="documentation/part3/attempt7/image_stitched.jpg" alt="image_name"> |
+
+To see more results, view the rest of the tables of images in the Discussion section of `part3.py`.
 
 ## Discussion
 ### part1.py
@@ -269,5 +280,4 @@ Wrote part2.py inverse warping and bilinear interpolation code. Created "Simple"
 [6] Hierarchical agglomerative clustering: https://en.wikipedia.org/wiki/Hierarchical_clustering
 
 #To complete:
-- (optional) Seth review Part1 Methods to add any recent changes made.
 - Finalize Acknowledgements Section
