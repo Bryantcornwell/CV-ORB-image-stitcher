@@ -184,7 +184,7 @@ Correctly fit the transformed image into the image boundary.
 
 Attempt 6:
 
-Starting to to try and setup the images for stitching
+Starting to try and setup the images for stitching
 
 | Image A Centroid | Image B Centroid  | Output |
 | :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |  :---------------------------------------------------------------------------------------------------: | 
